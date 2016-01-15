@@ -13,6 +13,7 @@ import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.theappx.simpletodo.adapter.TodoAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+
+    TodoAdapter mTodoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL));
+        mTodoAdapter = new TodoAdapter();
+        recyclerView.setAdapter(mTodoAdapter);
     }
 
     @Override
