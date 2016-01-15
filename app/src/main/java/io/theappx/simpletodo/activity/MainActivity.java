@@ -1,4 +1,4 @@
-package io.theappx.simpletodo;
+package io.theappx.simpletodo.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +13,7 @@ import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 
 public class MainActivity extends AppCompatActivity {
