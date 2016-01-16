@@ -18,7 +18,7 @@ public class StorIOProvider {
     private StorIOProvider() {
     }
 
-    private static StorIOSQLite getInstance(Context pContext) {
+    public static StorIOSQLite getInstance(Context pContext) {
         if (mStorIOSQLite == null) {
             mStorIOSQLite = DefaultStorIOSQLite.builder()
                     .sqliteOpenHelper(new DatabaseHelper(pContext))
