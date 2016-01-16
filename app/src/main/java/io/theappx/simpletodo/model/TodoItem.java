@@ -31,6 +31,15 @@ public class TodoItem implements Parcelable {
         mUniqueId = UUID.randomUUID().toString();
     }
 
+    public TodoItem(TodoItem other) {
+        this.mUniqueId = other.mUniqueId;
+        this.mTitle = other.mTitle;
+        this.mDescription = other.mDescription;
+        this.mDate = other.mDate;
+        this.mTime = other.mTime;
+        this.shouldRemind = other.shouldRemind;
+    }
+
     protected TodoItem(Parcel in) {
         this.mTitle = in.readString();
         this.mDescription = in.readString();
@@ -91,6 +100,26 @@ public class TodoItem implements Parcelable {
 
     public void setShouldRemind(boolean pShouldRemind) {
         shouldRemind = pShouldRemind;
+    }
+
+    public boolean isChanged(TodoItem pCloneTodoItem) {
+        return mTitle.equals(pCloneTodoItem.getTitle())
+                && mDescription.equals(pCloneTodoItem.getDescription())
+                && isRemindStatusChanged(pCloneTodoItem)
+                && isDateChanged(pCloneTodoItem)
+                && isTimeChanged(pCloneTodoItem);
+    }
+
+    public boolean isDateChanged(TodoItem pCloneTodoItem) {
+        return shouldRemind && mDate.equals(pCloneTodoItem.getDate());
+    }
+
+    public boolean isTimeChanged(TodoItem pCloneTodoItem) {
+        return shouldRemind && mTime.equals(pCloneTodoItem.getTime());
+    }
+
+    public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {
+        return shouldRemind == pCloneTodoItem.shouldBeReminded();
     }
 
     @Override

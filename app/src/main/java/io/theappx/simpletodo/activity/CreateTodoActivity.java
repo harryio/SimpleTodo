@@ -3,6 +3,7 @@ package io.theappx.simpletodo.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -25,6 +27,7 @@ import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.DateUtils;
 import io.theappx.simpletodo.utils.FormatUtils;
+import io.theappx.simpletodo.utils.StorIOProvider;
 
 public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
@@ -46,12 +49,13 @@ public class CreateTodoActivity extends AppCompatActivity implements
     @Bind(R.id.remind_view)
     LinearLayout remindView;
 
-    private TodoItem mTodoItem;
+    private TodoItem mTodoItem, mCloneTodoItem;
 
     private boolean isNewTodo;
 
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
+    private StorIOSQLite mStorIOSQLite;
 
     private Calendar mCalendar;
 
@@ -72,6 +76,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mCalendar = Calendar.getInstance();
+        mStorIOSQLite = StorIOProvider.getInstance(getApplicationContext());
 
         Intent lIntent = getIntent();
         mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
@@ -81,6 +86,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
             isNewTodo = true;
         } else {
             if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+            mCloneTodoItem = new TodoItem(mTodoItem);
             isNewTodo = false;
         }
 
@@ -178,5 +184,36 @@ public class CreateTodoActivity extends AppCompatActivity implements
         String timeString = FormatUtils.getTimeStringFromDate(mCalendar.getTime());
         mTodoItem.setTime(timeString);
         setUpTimeEditText();
+    }
+
+    @WorkerThread
+    private void updateItem() {
+        mStorIOSQLite
+                .put()
+                .object(mTodoItem)
+                .prepare()
+                .executeAsBlocking();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isNewTodo) updateItem();
+
+        if (mTodoItem.isChanged(mCloneTodoItem)) {
+            updateItem();
+
+            if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
+                if (mTodoItem.shouldBeReminded()) {
+                    //TODO Create alarm here.
+                } else {
+                    //TODO Remove alarm here.
+                }
+            } else {
+                if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
+                    //TODO Update alarm here.
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }
