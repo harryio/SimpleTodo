@@ -1,5 +1,7 @@
 package io.theappx.simpletodo.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -7,21 +9,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.model.TodoItem;
+import io.theappx.simpletodo.utils.DateUtils;
+import io.theappx.simpletodo.utils.FormatUtils;
 
 public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
+    private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -31,11 +39,31 @@ public class CreateTodoActivity extends AppCompatActivity implements
     EditText descriptionEditText;
     @Bind(R.id.switch_remind)
     SwitchCompat remindSwitch;
-
+    @Bind(R.id.et_date)
+    EditText dateEditText;
+    @Bind(R.id.et_time)
+    EditText timeEditText;
+    @Bind(R.id.remind_view)
     LinearLayout remindView;
 
-    DatePickerDialog mDatePickerDialog;
-    TimePickerDialog mTimePickerDialog;
+    private TodoItem mTodoItem;
+
+    private boolean isNewTodo;
+
+    private DatePickerDialog mDatePickerDialog;
+    private TimePickerDialog mTimePickerDialog;
+
+    private Calendar mCalendar;
+
+    public static Intent getCallingIntent(Context pContext, TodoItem pTodoItem) {
+        Intent lIntent = new Intent(pContext, CreateTodoActivity.class);
+        lIntent.putExtra(ARG_TODO_ITEM, pTodoItem);
+        return lIntent;
+    }
+
+    public static Intent getCallingIntent(Context pContext) {
+        return new Intent(pContext, CreateTodoActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +71,20 @@ public class CreateTodoActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_create_todo);
         ButterKnife.bind(this);
 
+        mCalendar = Calendar.getInstance();
+
+        Intent lIntent = getIntent();
+        mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
+
+        if (mTodoItem == null) {
+            mTodoItem = new TodoItem();
+            isNewTodo = true;
+        } else {
+            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+            isNewTodo = false;
+        }
+
+        setUpDateAndTimeEditText();
         setUpToolbar();
 
         Calendar lCalendar = Calendar.getInstance();
@@ -56,8 +98,22 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 this,
                 lCalendar.get(Calendar.HOUR_OF_DAY),
                 lCalendar.get(Calendar.MINUTE),
-                true
+                false
         );
+    }
+
+    private void setUpDateAndTimeEditText() {
+        setUpDateEditText();
+        setUpTimeEditText();
+    }
+
+    private void setUpTimeEditText() {
+        timeEditText.setText(FormatUtils.getTimeStringFromDate(mCalendar.getTime()));
+    }
+
+    private void setUpDateEditText() {
+        dateEditText.setText(DateUtils.isToday(mCalendar) ? "Today"
+                : FormatUtils.getDayStringFromDate(mCalendar.getTime()));
     }
 
     private void setUpToolbar() {
@@ -82,11 +138,45 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar lCalendar = Calendar.getInstance();
+        lCalendar.set(year, monthOfYear, dayOfMonth);
 
+        Date lDate = lCalendar.getTime();
+        if (lDate.before(new Date())) {
+            Toast.makeText(this, "Woah there! The time machine isn't invented yet", Toast.LENGTH_SHORT).show();
+        } else {
+            mCalendar.set(year, monthOfYear, dayOfMonth);
+            setTodoDate();
+        }
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        int year = mCalendar.get(Calendar.YEAR);
+        int monthOfYear = mCalendar.get(Calendar.MONTH);
+        int dayOfMonth = mCalendar.get(Calendar.DAY_OF_MONTH);
 
+        Calendar lCalendar = Calendar.getInstance();
+        lCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute, 0);
+
+        Date lDate = lCalendar.getTime();
+        if (lDate.before(new Date())) {
+            Toast.makeText(this, "Woah there! The time machine isn't invented yet", Toast.LENGTH_SHORT).show();
+        } else {
+            mCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+            setTodoTime();
+        }
+    }
+
+    private void setTodoDate() {
+        String dateString = FormatUtils.getDayStringFromDate(mCalendar.getTime());
+        mTodoItem.setDate(dateString);
+        setUpDateEditText();
+    }
+
+    private void setTodoTime() {
+        String timeString = FormatUtils.getTimeStringFromDate(mCalendar.getTime());
+        mTodoItem.setTime(timeString);
+        setUpTimeEditText();
     }
 }
