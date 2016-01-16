@@ -3,27 +3,29 @@ package io.theappx.simpletodo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteColumn;
+import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
+
 import java.util.Date;
 import java.util.UUID;
 
+import io.theappx.simpletodo.database.TodoContract;
 import io.theappx.simpletodo.utils.FormatUtils;
 
+@StorIOSQLiteType(table = TodoContract.TABLE_NAME)
 public class TodoItem implements Parcelable {
-    public static final Parcelable.Creator<TodoItem> CREATOR = new Parcelable.Creator<TodoItem>() {
-        public TodoItem createFromParcel(Parcel source) {
-            return new TodoItem(source);
-        }
-
-        public TodoItem[] newArray(int size) {
-            return new TodoItem[size];
-        }
-    };
-    private String mUniqueId;
-    private String mTitle;
-    private String mDescription;
-    private String mDate;
-    private String mTime;
-    private boolean shouldRemind;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_ID, key = true)
+    String mUniqueId;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_TITLE)
+    String mTitle;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_DESCRIPTION)
+    String mDescription;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_DATE)
+    String mDate;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_TIME)
+    String mTime;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_REMIND)
+    boolean shouldRemind;
 
     public TodoItem() {
         mUniqueId = UUID.randomUUID().toString();
@@ -103,4 +105,14 @@ public class TodoItem implements Parcelable {
         dest.writeString(this.mDate);
         dest.writeByte(shouldRemind ? (byte) 1 : (byte) 0);
     }
+
+    public static final Parcelable.Creator<TodoItem> CREATOR = new Parcelable.Creator<TodoItem>() {
+        public TodoItem createFromParcel(Parcel source) {
+            return new TodoItem(source);
+        }
+
+        public TodoItem[] newArray(int size) {
+            return new TodoItem[size];
+        }
+    };
 }

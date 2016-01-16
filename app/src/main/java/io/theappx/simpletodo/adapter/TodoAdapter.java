@@ -39,8 +39,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
         if (lTodoItem.shouldBeReminded()) {
-            String lDateTime = lTodoItem.getDateTime();
-            holder.timerTextView.setText(lDateTime);
+//            String lDateTime = lTodoItem.getDateTime();
+//            holder.timerTextView.setText(lDateTime);
         } else {
             holder.timerTextView.setVisibility(View.GONE);
         }
