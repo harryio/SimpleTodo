@@ -62,34 +62,73 @@
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notifications_on"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/remind"/>
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/switch_remind"
                 style="@style/CustomSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_marginTop="4dp"
                 android:checked="false"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:text="@string/remind"/>
-
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/remind_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/et_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:textIsSelectable="false"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\@"
+                android:textColor="@android:color/holo_blue_dark"
+                />
 
+            <EditText
+                android:id="@+id/et_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:textIsSelectable="false"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
