@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.theappx.simpletodo.utils.FormatUtils;
 
@@ -17,13 +18,15 @@ public class TodoItem implements Parcelable {
             return new TodoItem[size];
         }
     };
+    private String mUniqueId;
     private String mTitle;
     private String mDescription;
     private String mDate;
     private String mTime;
     private boolean shouldRemind;
 
-    public TodoItem(){
+    public TodoItem() {
+        mUniqueId = UUID.randomUUID().toString();
     }
 
     protected TodoItem(Parcel in) {
@@ -74,6 +77,10 @@ public class TodoItem implements Parcelable {
             String lDateWithTime = mDate + " " + mTime;
             return FormatUtils.getDateFromString(lDateWithTime);
         } else throw new NullPointerException("Date or Time is null");
+    }
+
+    public String getId() {
+        return mUniqueId;
     }
 
     public boolean shouldBeReminded() {
