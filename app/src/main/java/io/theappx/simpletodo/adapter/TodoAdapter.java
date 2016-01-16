@@ -13,6 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
+import io.theappx.simpletodo.utils.FormatUtils;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private List<TodoItem> mTodoItems;
@@ -39,8 +40,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
         if (lTodoItem.shouldBeReminded()) {
-//            String lDateTime = lTodoItem.getDateTime();
-//            holder.timerTextView.setText(lDateTime);
+            String lDateTime = FormatUtils.getDayStringFromDate(lTodoItem.getCompleteDate());
+            holder.timerTextView.setText(lDateTime);
         } else {
             holder.timerTextView.setVisibility(View.GONE);
         }

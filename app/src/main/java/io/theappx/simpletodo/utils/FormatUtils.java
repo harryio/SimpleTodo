@@ -32,4 +32,9 @@ public class FormatUtils {
         SimpleDateFormat lSimpleDateFormat = new SimpleDateFormat(DAY_FORMAT, Locale.getDefault());
         return lSimpleDateFormat.format(pDate);
     }
+
+    public static String getStringFromDate(Date pDate) {
+        SimpleDateFormat lSimpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+        return lSimpleDateFormat.format(pDate);
+    }
 }
