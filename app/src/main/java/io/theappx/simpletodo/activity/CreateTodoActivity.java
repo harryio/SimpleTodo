@@ -7,7 +7,9 @@ import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -92,6 +94,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
         setUpDateAndTimeEditText();
         setUpToolbar();
+        setUpSwitchCompat();
 
         Calendar lCalendar = Calendar.getInstance();
         mDatePickerDialog = DatePickerDialog.newInstance(
@@ -104,8 +107,24 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 this,
                 lCalendar.get(Calendar.HOUR_OF_DAY),
                 lCalendar.get(Calendar.MINUTE),
-                false
+                DateFormat.is24HourFormat(this)
         );
+    }
+
+    private void setUpSwitchCompat() {
+        remindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTodoItem.setShouldRemind(isChecked);
+
+                if (isChecked) {
+                    setUpDateAndTimeEditText();
+                    //TODO Animate in remind view here
+                } else {
+                    //TODO Animate out remind view here
+                }
+            }
+        });
     }
 
     private void setUpDateAndTimeEditText() {
@@ -114,7 +133,9 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpTimeEditText() {
-        timeEditText.setText(FormatUtils.getTimeStringFromDate(mCalendar.getTime()));
+        timeEditText.setText(DateFormat.is24HourFormat(this) ?
+                FormatUtils.get24HourTimeStringFromDate(mCalendar.getTime()) :
+                FormatUtils.getTimeStringFromDate(mCalendar.getTime()));
     }
 
     private void setUpDateEditText() {
@@ -140,6 +161,12 @@ public class CreateTodoActivity extends AppCompatActivity implements
     @OnClick(R.id.et_time)
     public void selectTime() {
         mTimePickerDialog.show(getFragmentManager(), "Choose Time");
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClick() {
+        onActivityExit();
+        finish();
     }
 
     @Override
@@ -186,17 +213,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         setUpTimeEditText();
     }
 
-    @WorkerThread
-    private void updateItem() {
-        mStorIOSQLite
-                .put()
-                .object(mTodoItem)
-                .prepare()
-                .executeAsBlocking();
-    }
-
-    @Override
-    public void onBackPressed() {
+    private void onActivityExit() {
         if (isNewTodo) updateItem();
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
@@ -214,6 +231,20 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 }
             }
         }
+    }
+
+    @WorkerThread
+    private void updateItem() {
+        mStorIOSQLite
+                .put()
+                .object(mTodoItem)
+                .prepare()
+                .executeAsBlocking();
+    }
+
+    @Override
+    public void onBackPressed() {
+        onActivityExit();
         super.onBackPressed();
     }
 }
