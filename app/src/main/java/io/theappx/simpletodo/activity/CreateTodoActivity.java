@@ -1,5 +1,9 @@
 package io.theappx.simpletodo.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +13,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +40,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
+    private static final int ANIM_DURATION = 1500;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -119,12 +125,46 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
                 if (isChecked) {
                     setUpDateAndTimeEditText();
-                    //TODO Animate in remind view here
+                    animateInRemindView();
                 } else {
-                    //TODO Animate out remind view here
+                    animateOutRemindView();
                 }
             }
         });
+    }
+
+    private void animateOutRemindView() {
+        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(remindView, "alpha", 1f, 0f);
+        ObjectAnimator translateYAnim = ObjectAnimator.
+                ofFloat(remindView, "translationY", 0, remindView.getHeight());
+        AnimatorSet lAnimatorSet = new AnimatorSet();
+        lAnimatorSet.setDuration(ANIM_DURATION);
+        lAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        lAnimatorSet.playTogether(fadeInAnim, translateYAnim);
+        lAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                remindView.setVisibility(View.GONE);
+            }
+        });
+        lAnimatorSet.start();
+    }
+
+    private void animateInRemindView() {
+        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(remindView, "alpha", 0f, 1f);
+        ObjectAnimator translateYAnim = ObjectAnimator.
+                ofFloat(remindView, "translationY", remindView.getHeight(), 0);
+        AnimatorSet lAnimatorSet = new AnimatorSet();
+        lAnimatorSet.setDuration(ANIM_DURATION);
+        lAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        lAnimatorSet.playTogether(fadeInAnim, translateYAnim);
+        lAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                remindView.setVisibility(View.VISIBLE);
+            }
+        });
+        lAnimatorSet.start();
     }
 
     private void setUpDateAndTimeEditText() {
