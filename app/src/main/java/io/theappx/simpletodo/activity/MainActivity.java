@@ -1,15 +1,12 @@
 package io.theappx.simpletodo.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
@@ -18,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.database.TodoContract;
@@ -33,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R.id.fab)
-    FloatingActionButton fab;
 
     TodoAdapter mTodoAdapter;
     private Subscription mSubscription;
@@ -46,14 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         setUpRecyclerView();
         loadData();
@@ -97,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 StaggeredGridLayoutManager.VERTICAL));
         mTodoAdapter = new TodoAdapter();
         recyclerView.setAdapter(mTodoAdapter);
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClick() {
+        startActivity(CreateTodoActivity.getCallingIntent(this));
     }
 
     @Override
