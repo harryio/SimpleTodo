@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
+import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.DateUtils;
 import io.theappx.simpletodo.utils.FormatUtils;
 import io.theappx.simpletodo.utils.StorIOProvider;
@@ -254,10 +254,13 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void onActivityExit() {
-        if (isNewTodo) updateItem();
+        if (isNewTodo) {
+            storeItemToDatabase();
+            return;
+        }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
-            updateItem();
+            storeItemToDatabase();
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
                 if (mTodoItem.shouldBeReminded()) {
@@ -273,13 +276,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
     }
 
-    @WorkerThread
-    private void updateItem() {
-        mStorIOSQLite
-                .put()
-                .object(mTodoItem)
-                .prepare()
-                .executeAsBlocking();
+    private void storeItemToDatabase() {
+        TodoService.startActionSaveTodo(this, mTodoItem);
     }
 
     @Override
