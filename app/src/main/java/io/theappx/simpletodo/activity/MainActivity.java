@@ -25,7 +25,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements TodoAdapter.OnItemClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -84,12 +85,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL));
         mTodoAdapter = new TodoAdapter();
+        mTodoAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mTodoAdapter);
     }
 
     @OnClick(R.id.fab)
     public void onFabClick() {
         startActivity(CreateTodoActivity.getCallingIntent(this));
+    }
+
+    @Override
+    public void onListItemClick(TodoItem pTodoItem) {
+        startActivity(CreateTodoActivity.getCallingIntent(this, pTodoItem));
     }
 
     @Override
