@@ -25,6 +25,12 @@
             android:name=".service.TodoService"
             android:exported="false">
         </service>
+
+        <receiver
+            android:name=".receiver.NotificationPublisher"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
     </application>
 
 </manifest>
