@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.WorkerThread;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +61,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
     EditText timeEditText;
     @Bind(R.id.remind_view)
     LinearLayout remindView;
+    @Bind(R.id.title_text_layout)
+    TextInputLayout titleTextLayout;
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
 
     private TodoItem mTodoItem, mCloneTodoItem;
 
@@ -303,6 +309,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
+            if (TextUtils.isEmpty(mTodoItem.getTitle())) {
+                titleTextLayout.setError(getString(R.string.error_empty_title));
+                return;
+            }
+
             updateItem();
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
