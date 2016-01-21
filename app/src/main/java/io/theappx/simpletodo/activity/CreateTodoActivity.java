@@ -11,6 +11,8 @@ import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -98,6 +100,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
             isNewTodo = false;
         }
 
+        setUpTitleAndDescpEditText();
         setUpDateAndTimeEditText();
         setUpToolbar();
         setUpSwitchCompat();
@@ -115,6 +118,42 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 lCalendar.get(Calendar.MINUTE),
                 DateFormat.is24HourFormat(this)
         );
+    }
+
+    private void setUpTitleAndDescpEditText() {
+        titleEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mTodoItem.setTitle(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        descriptionEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mTodoItem.setDescription(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void setUpSwitchCompat() {
