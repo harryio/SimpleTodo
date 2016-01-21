@@ -264,7 +264,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
                 if (mTodoItem.shouldBeReminded()) {
-                    //TODO Create alarm here.
+                    TodoService.startActioCreateAlarm(this, mTodoItem);
                 } else {
                     //TODO Remove alarm here.
                 }
