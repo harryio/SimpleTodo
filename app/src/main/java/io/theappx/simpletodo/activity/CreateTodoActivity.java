@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -293,7 +294,13 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void onActivityExit() {
-        if (isNewTodo) updateItem();
+        if (isNewTodo) {
+            if (!TextUtils.isEmpty(mTodoItem.getTitle())) {
+                updateItem();
+                //TODO Create alarm here.
+            }
+            return;
+        }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
             updateItem();
