@@ -263,7 +263,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 if (mTodoItem.shouldBeReminded()) {
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 } else {
-                    //TODO Remove alarm here.
+                    TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
                 }
             } else {
                 if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {

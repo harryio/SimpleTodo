@@ -24,10 +24,12 @@ import io.theappx.simpletodo.utils.StorIOProvider;
  * helper methods.
  */
 public class TodoService extends IntentService {
-    private static final String ACTION_SAVE_TDOD = "io.theappx.simpletodo.action.SAVETODO";
+    private static final String ACTION_SAVE_TODO = "io.theappx.simpletodo.action.SAVETODO";
     private static final String ACTION_CREATE_ALARM = "io.theappx.simpletodo.action.CREATEALARM";
+    private static final String ACTION_DELETE_ALARM = "io.theappx.simpletodo.action.DELETEALARM";
 
     private static final String EXTRA_TODO = "io.theappx.simpletodo.extra.TODO";
+    private static final String EXTRA_TODO_ID = "io.theappx.simpletodo.extra.TODO_ID";
 
     public TodoService() {
         super("TodoService");
@@ -35,7 +37,7 @@ public class TodoService extends IntentService {
 
     public static void startActionSaveTodo(Context pContext, TodoItem pTodoItem) {
         Intent intent = new Intent(pContext, TodoService.class);
-        intent.setAction(ACTION_SAVE_TDOD);
+        intent.setAction(ACTION_SAVE_TODO);
         intent.putExtra(EXTRA_TODO, pTodoItem);
         pContext.startService(intent);
     }
@@ -47,16 +49,26 @@ public class TodoService extends IntentService {
         pContext.startService(intent);
     }
 
+    public static void startActionDeleteAlarm(Context pContext, String todoId) {
+        Intent intent = new Intent(pContext, TodoService.class);
+        intent.setAction(ACTION_DELETE_ALARM);
+        intent.putExtra(EXTRA_TODO, todoId);
+        pContext.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_SAVE_TDOD.equals(action)) {
+            if (ACTION_SAVE_TODO.equals(action)) {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleActionSaveTodo(lTodoItem);
-            } else if (ACTION_SAVE_TDOD.equals(action)) {
+            } else if (ACTION_CREATE_ALARM.equals(action)) {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleCreateAlarm(lTodoItem);
+            } else if (ACTION_DELETE_ALARM.equals(action)) {
+                final String todoItemId = intent.getParcelableExtra(EXTRA_TODO_ID);
+                handleActionDeleteAlarm(todoItemId);
             }
         }
     }
@@ -68,6 +80,17 @@ public class TodoService extends IntentService {
                 .object(pTodoItem)
                 .prepare()
                 .executeAsBlocking();
+    }
+
+    private void handleActionDeleteAlarm(String todoItemId) {
+        Intent intent = new Intent(this, NotificationPublisher.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoItemId.hashCode(),
+                intent, PendingIntent.FLAG_NO_CREATE);
+
+        if (pendingIntent != null) {
+            pendingIntent.cancel();
+            ((AlarmManager) getSystemService(ALARM_SERVICE)).cancel(pendingIntent);
+        }
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
