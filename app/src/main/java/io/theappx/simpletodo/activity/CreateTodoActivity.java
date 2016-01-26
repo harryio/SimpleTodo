@@ -189,6 +189,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
         });
     }
 
+    private void deleteTodoItem() {
+        //TODO Delete item here.
+        //TODO Remove alarm here.
+    }
+
     @OnClick(R.id.et_date)
     public void selectDate() {
         mDatePickerDialog.show(getFragmentManager(), "Choose Date");
@@ -267,7 +272,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 }
             } else {
                 if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                    //TODO Update alarm here.
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
             }
         }
