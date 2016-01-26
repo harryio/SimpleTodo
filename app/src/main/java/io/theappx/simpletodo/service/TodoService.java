@@ -6,7 +6,6 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
@@ -39,7 +38,7 @@ public class TodoService extends IntentService {
         pContext.startService(intent);
     }
 
-    public static void startActioCreateAlarm(Context pContext, TodoItem pTodoItem) {
+    public static void startActionCreateAlarm(Context pContext, TodoItem pTodoItem) {
         Intent intent = new Intent(pContext, TodoService.class);
         intent.setAction(ACTION_CREATE_ALARM);
         intent.putExtra(EXTRA_TODO, pTodoItem);
@@ -76,16 +75,14 @@ public class TodoService extends IntentService {
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
         Intent lIntent = new Intent(this, NotificationPublisher.class);
         lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, pTodoItem.getId());
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION, getNotification(pTodoItem));
-        //TODO Determine which flag to use here
-        PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, 0, lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        lIntent.putExtra(NotificationPublisher.NOTIFICATION, pNotification);
+        PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode()
+                , lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long elapsedRealTime = SystemClock.elapsedRealtime();
-        long futureInMillis = elapsedRealTime
-                + (pTodoItem.getCompleteDate().getTime() - elapsedRealTime);
+        long timeInMillis = pTodoItem.getCompleteDate().getTime();
 
         AlarmManager lAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        lAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, lPendingIntent);
+        lAlarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);
     }
 
     private Notification getNotification(TodoItem pTodoItem) {

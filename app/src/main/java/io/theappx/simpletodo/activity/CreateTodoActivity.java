@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -34,7 +33,6 @@ import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.DateUtils;
 import io.theappx.simpletodo.utils.FormatUtils;
-import io.theappx.simpletodo.utils.StorIOProvider;
 
 public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
@@ -63,7 +61,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
-    private StorIOSQLite mStorIOSQLite;
 
     private Calendar mCalendar;
 
@@ -84,7 +81,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mCalendar = Calendar.getInstance();
-        mStorIOSQLite = StorIOProvider.getInstance(getApplicationContext());
 
         Intent lIntent = getIntent();
         mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
@@ -256,6 +252,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private void onActivityExit() {
         if (isNewTodo) {
             storeItemToDatabase();
+            TodoService.startActionCreateAlarm(this, mTodoItem);
             return;
         }
 
@@ -264,7 +261,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
                 if (mTodoItem.shouldBeReminded()) {
-                    TodoService.startActioCreateAlarm(this, mTodoItem);
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
                 } else {
                     //TODO Remove alarm here.
                 }
