@@ -46,6 +46,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         TimePickerDialog.OnTimeSetListener {
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
     private static final int ANIM_DURATION = 1500;
+    private static final String ARG_TODO_INSTANCE = "io.theappx.todoInstance";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -98,13 +99,15 @@ public class CreateTodoActivity extends AppCompatActivity implements
         Intent lIntent = getIntent();
         mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
 
-        if (mTodoItem == null) {
-            mTodoItem = new TodoItem();
-            isNewTodo = true;
-        } else {
-            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
-            mCloneTodoItem = new TodoItem(mTodoItem);
-            isNewTodo = false;
+        if (savedInstanceState == null) {
+            if (mTodoItem == null) {
+                mTodoItem = new TodoItem();
+                isNewTodo = true;
+            } else {
+                if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+                mCloneTodoItem = new TodoItem(mTodoItem);
+                isNewTodo = false;
+            }
         }
 
         setUpTitleAndDescpEditText();
@@ -125,6 +128,20 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 lCalendar.get(Calendar.MINUTE),
                 DateFormat.is24HourFormat(this)
         );
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(ARG_TODO_INSTANCE, mTodoItem);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mTodoItem = savedInstanceState.getParcelable(ARG_TODO_INSTANCE);
     }
 
     private void setUpTitleAndDescpEditText() {

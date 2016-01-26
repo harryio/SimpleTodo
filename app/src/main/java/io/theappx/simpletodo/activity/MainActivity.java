@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
+        //TODO Set number of columns according to available width
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL));
         mTodoAdapter = new TodoAdapter();
