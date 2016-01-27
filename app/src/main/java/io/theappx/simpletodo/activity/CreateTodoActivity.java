@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CompoundButton;
@@ -187,11 +188,26 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 onBackPressed();
             }
         });
+        toolbar.inflateMenu(R.menu.menu_create_todo_activity);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        if (!isNewTodo) {
+                            deleteTodoItem();
+                            finish();
+                        }
+                        return true;
+                }
+
+                return true;
+            }
+        });
     }
 
     private void deleteTodoItem() {
-        //TODO Delete item here.
-        //TODO Remove alarm here.
+        TodoService.startActionDeleteTodo(this, mTodoItem);
     }
 
     @OnClick(R.id.et_date)
