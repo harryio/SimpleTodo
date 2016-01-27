@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CompoundButton;
@@ -24,7 +25,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -37,9 +37,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
+import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.DateUtils;
 import io.theappx.simpletodo.utils.FormatUtils;
-import io.theappx.simpletodo.utils.StorIOProvider;
 
 public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
@@ -73,7 +73,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
-    private StorIOSQLite mStorIOSQLite;
 
     private Calendar mCalendar;
 
@@ -94,7 +93,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mCalendar = Calendar.getInstance();
-        mStorIOSQLite = StorIOProvider.getInstance(getApplicationContext());
 
         Intent lIntent = getIntent();
         mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
@@ -254,6 +252,26 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 onBackPressed();
             }
         });
+        toolbar.inflateMenu(R.menu.menu_create_todo_activity);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        if (!isNewTodo) {
+                            deleteTodoItem();
+                            finish();
+                        }
+                        return true;
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private void deleteTodoItem() {
+        TodoService.startActionDeleteTodo(this, mTodoItem);
     }
 
     @OnClick(R.id.et_date)
@@ -318,42 +336,30 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private void onActivityExit() {
         if (isNewTodo) {
-            if (!TextUtils.isEmpty(mTodoItem.getTitle())) {
-                updateItem();
-                //TODO Create alarm here.
-            }
+            storeItemToDatabase();
+            TodoService.startActionCreateAlarm(this, mTodoItem);
             return;
         }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
-            if (TextUtils.isEmpty(mTodoItem.getTitle())) {
-                titleTextLayout.setError(getString(R.string.error_empty_title));
-                return;
-            }
-
-            updateItem();
+            storeItemToDatabase();
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
                 if (mTodoItem.shouldBeReminded()) {
-                    //TODO Create alarm here.
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
                 } else {
-                    //TODO Remove alarm here.
+                    TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
                 }
             } else {
                 if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                    //TODO Update alarm here.
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
             }
         }
     }
 
-    @WorkerThread
-    private void updateItem() {
-        mStorIOSQLite
-                .put()
-                .object(mTodoItem)
-                .prepare()
-                .executeAsBlocking();
+    private void storeItemToDatabase() {
+        TodoService.startActionSaveTodo(this, mTodoItem);
     }
 
     @Override

@@ -25,6 +25,7 @@ import io.theappx.simpletodo.utils.StorIOProvider;
  */
 public class TodoService extends IntentService {
     private static final String ACTION_SAVE_TODO = "io.theappx.simpletodo.action.SAVETODO";
+    private static final String ACTION_DELETE_TODO = "io.theappx.simpletodo.action.DELETETODO";
     private static final String ACTION_CREATE_ALARM = "io.theappx.simpletodo.action.CREATEALARM";
     private static final String ACTION_DELETE_ALARM = "io.theappx.simpletodo.action.DELETEALARM";
 
@@ -42,6 +43,13 @@ public class TodoService extends IntentService {
         pContext.startService(intent);
     }
 
+    public static void startActionDeleteTodo(Context context, TodoItem todoItem) {
+        Intent intent = new Intent(context, TodoService.class);
+        intent.setAction(ACTION_DELETE_ALARM);
+        intent.putExtra(EXTRA_TODO, todoItem);
+        context.startService(intent);
+    }
+
     public static void startActionCreateAlarm(Context pContext, TodoItem pTodoItem) {
         Intent intent = new Intent(pContext, TodoService.class);
         intent.setAction(ACTION_CREATE_ALARM);
@@ -51,7 +59,7 @@ public class TodoService extends IntentService {
 
     public static void startActionDeleteAlarm(Context pContext, String todoId) {
         Intent intent = new Intent(pContext, TodoService.class);
-        intent.setAction(ACTION_DELETE_ALARM);
+        intent.setAction(ACTION_DELETE_TODO);
         intent.putExtra(EXTRA_TODO, todoId);
         pContext.startService(intent);
     }
@@ -63,6 +71,9 @@ public class TodoService extends IntentService {
             if (ACTION_SAVE_TODO.equals(action)) {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleActionSaveTodo(lTodoItem);
+            } else if(ACTION_DELETE_ALARM.equals(action)) {
+                final TodoItem todoItem = intent.getParcelableExtra(EXTRA_TODO);
+                handleActionDeleteTodo(todoItem);
             } else if (ACTION_CREATE_ALARM.equals(action)) {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleCreateAlarm(lTodoItem);
@@ -80,6 +91,17 @@ public class TodoService extends IntentService {
                 .object(pTodoItem)
                 .prepare()
                 .executeAsBlocking();
+    }
+
+    private void handleActionDeleteTodo(TodoItem todoItem) {
+        StorIOSQLite storIOSQLite = StorIOProvider.getInstance(getApplicationContext());
+        storIOSQLite
+                .delete()
+                .object(todoItem)
+                .prepare()
+                .executeAsBlocking();
+
+        handleActionDeleteAlarm(todoItem.getId());
     }
 
     private void handleActionDeleteAlarm(String todoItemId) {
