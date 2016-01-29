@@ -101,7 +101,8 @@ public class TodoService extends IntentService {
                 .prepare()
                 .executeAsBlocking();
 
-        handleActionDeleteAlarm(todoItem.getId());
+        if (todoItem.shouldBeReminded())
+            handleActionDeleteAlarm(todoItem.getId());
     }
 
     private void handleActionDeleteAlarm(String todoItemId) {

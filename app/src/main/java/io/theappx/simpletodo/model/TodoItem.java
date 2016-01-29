@@ -28,7 +28,7 @@ public class TodoItem implements Parcelable {
     boolean shouldRemind;
 
     public TodoItem() {
-        mUniqueId = UUID.randomUUID().toString();
+        this.mUniqueId = UUID.randomUUID().toString();
     }
 
     public TodoItem(TodoItem other) {
@@ -41,9 +41,11 @@ public class TodoItem implements Parcelable {
     }
 
     protected TodoItem(Parcel in) {
+        this.mUniqueId = in.readString();
         this.mTitle = in.readString();
         this.mDescription = in.readString();
         this.mDate = in.readString();
+        this.mTime = in.readString();
         this.shouldRemind = in.readByte() != 0;
     }
 

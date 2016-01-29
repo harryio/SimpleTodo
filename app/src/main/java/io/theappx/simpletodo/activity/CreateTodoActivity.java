@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.WorkerThread;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -336,12 +335,21 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private void onActivityExit() {
         if (isNewTodo) {
-            storeItemToDatabase();
-            TodoService.startActionCreateAlarm(this, mTodoItem);
+            if (!TextUtils.isEmpty(mTodoItem.getTitle())) {
+                storeItemToDatabase();
+                if (mTodoItem.shouldBeReminded()) {
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
+                }
+            }
             return;
         }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
+            if (TextUtils.isEmpty(mTodoItem.getTitle())) {
+                titleTextLayout.setError(getString(R.string.error_empty_title));
+                return;
+            }
+
             storeItemToDatabase();
 
             if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {

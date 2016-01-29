@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class FormatUtils {
     public static final String DAY_FORMAT = "M D, yyyy";
-    public static final String TIME_FORMAT = "K:mm AA";
+    public static final String TIME_FORMAT = "K:mm a";
     public static final String TIME_FORMAT_24_HOUR = "k:mm";
     public static final String DATE_FORMAT = DAY_FORMAT + " " + TIME_FORMAT;
 

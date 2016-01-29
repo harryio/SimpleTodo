@@ -1,9 +1,11 @@
 package io.theappx.simpletodo.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -36,18 +38,23 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         holder.setTodoItem(lTodoItem);
 
-        holder.titleTextView.setText(lTodoItem.getTitle());
-
+        String title = lTodoItem.getTitle();
         String lDescription = lTodoItem.getDescription();
+
+        Log.d("facebook", "title=" + title + " description=" + lDescription);
+
+        holder.titleTextView.setText(title);
+
         if (lDescription != null) {
             holder.descriptionTextView.setText(lDescription);
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
         if (lTodoItem.shouldBeReminded()) {
             String lDateTime = FormatUtils.getStringFromDate(lTodoItem.getCompleteDate());
+            holder.timerView.setVisibility(View.VISIBLE);
             holder.timerTextView.setText(lDateTime);
         } else {
-            holder.timerTextView.setVisibility(View.GONE);
+            holder.timerView.setVisibility(View.GONE);
         }
     }
 
@@ -68,6 +75,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         TextView descriptionTextView;
         @Bind(R.id.tv_timer)
         TextView timerTextView;
+        @Bind(R.id.v_timer)
+        LinearLayout timerView;
 
         private TodoItem mTodoItem;
         private OnItemClickListener mOnItemClickListener;
