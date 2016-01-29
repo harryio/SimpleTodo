@@ -30,6 +30,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,8 +45,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
-    private static final int ANIM_DURATION = 1500;
-    private static final String ARG_TODO_INSTANCE = "io.theappx.todoInstance";
+    private static final int ANIM_DURATION = 1000;
+    private static final String STATE_TODO_INSTANCE = "io.theappx.todoInstance";
+    private static final String STATE_TODO_CLONE_INSTANCE = "io.theappx.todoCloneInstance";
+    private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -93,52 +96,72 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
         mCalendar = Calendar.getInstance();
 
-        Intent lIntent = getIntent();
-        mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
-
         if (savedInstanceState == null) {
+            Intent lIntent = getIntent();
+            mTodoItem = lIntent.getParcelableExtra(ARG_TODO_ITEM);
+
             if (mTodoItem == null) {
-                mTodoItem = new TodoItem();
+                mTodoItem = new TodoItem(UUID.randomUUID().toString());
                 isNewTodo = true;
             } else {
                 if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+                fillTodoDataInEditText();
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
             }
-        }
 
+            setUp();
+        }
+    }
+
+    private void setUp() {
         setUpTitleAndDescpEditText();
         setUpDateAndTimeEditText();
         setUpToolbar();
         setUpSwitchCompat();
 
-        Calendar lCalendar = Calendar.getInstance();
         mDatePickerDialog = DatePickerDialog.newInstance(
                 this,
-                lCalendar.get(Calendar.YEAR),
-                lCalendar.get(Calendar.MONTH),
-                lCalendar.get(Calendar.DAY_OF_MONTH)
+                mCalendar.get(Calendar.YEAR),
+                mCalendar.get(Calendar.MONTH),
+                mCalendar.get(Calendar.DAY_OF_MONTH)
         );
         mTimePickerDialog = TimePickerDialog.newInstance(
                 this,
-                lCalendar.get(Calendar.HOUR_OF_DAY),
-                lCalendar.get(Calendar.MINUTE),
+                mCalendar.get(Calendar.HOUR_OF_DAY),
+                mCalendar.get(Calendar.MINUTE),
                 DateFormat.is24HourFormat(this)
         );
+    }
+
+    private void fillTodoDataInEditText() {
+        titleEditText.setText(mTodoItem.getTitle());
+        descriptionEditText.setText(mTodoItem.getDescription());
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(ARG_TODO_INSTANCE, mTodoItem);
+        outState.putParcelable(STATE_TODO_INSTANCE, mTodoItem);
+        outState.putParcelable(STATE_TODO_CLONE_INSTANCE, mCloneTodoItem);
+        outState.putBoolean(STATE_NEW_INSTANCE, isNewTodo);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        mTodoItem = savedInstanceState.getParcelable(ARG_TODO_INSTANCE);
+        mTodoItem = savedInstanceState.getParcelable(STATE_TODO_INSTANCE);
+        mCloneTodoItem = savedInstanceState.getParcelable(STATE_TODO_CLONE_INSTANCE);
+        isNewTodo = savedInstanceState.getBoolean(STATE_NEW_INSTANCE);
+
+        if (!isNewTodo) {
+            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+            fillTodoDataInEditText();
+        }
+
+        setUp();
     }
 
     private void setUpTitleAndDescpEditText() {
@@ -178,16 +201,29 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpSwitchCompat() {
+        remindSwitch.setChecked(mTodoItem.shouldBeReminded());
+        if (mTodoItem.shouldBeReminded()) {
+            animateInRemindView();
+        } else {
+            animateOutRemindView();
+        }
+
         remindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mTodoItem.setShouldRemind(isChecked);
 
                 if (isChecked) {
+                    Date mCalendarTime = mCalendar.getTime();
+                    mTodoItem.setDate(FormatUtils.getStringFromDate(mCalendarTime));
+                    mTodoItem.setTime(FormatUtils.getTimeStringFromDate(mCalendarTime));
+
                     setUpDateAndTimeEditText();
                     animateInRemindView();
                 } else {
                     animateOutRemindView();
+                    mTodoItem.setDate(null);
+                    mTodoItem.setTime(null);
                 }
             }
         });

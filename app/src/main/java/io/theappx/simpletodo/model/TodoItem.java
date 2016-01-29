@@ -7,7 +7,6 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteColumn;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
 import java.util.Date;
-import java.util.UUID;
 
 import io.theappx.simpletodo.database.TodoContract;
 import io.theappx.simpletodo.utils.FormatUtils;
@@ -28,7 +27,10 @@ public class TodoItem implements Parcelable {
     boolean shouldRemind;
 
     public TodoItem() {
-        this.mUniqueId = UUID.randomUUID().toString();
+    }
+
+    public TodoItem(String id) {
+        mUniqueId = id;
     }
 
     public TodoItem(TodoItem other) {
@@ -131,9 +133,11 @@ public class TodoItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mUniqueId);
         dest.writeString(this.mTitle);
         dest.writeString(this.mDescription);
         dest.writeString(this.mDate);
+        dest.writeString(this.mTime);
         dest.writeByte(shouldRemind ? (byte) 1 : (byte) 0);
     }
 

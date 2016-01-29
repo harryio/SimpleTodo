@@ -122,7 +122,7 @@ public class TodoService extends IntentService {
 
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
         Intent lIntent = new Intent(this, NotificationPublisher.class);
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, pTodoItem.getId());
+        lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, pTodoItem.getId().hashCode());
         lIntent.putExtra(NotificationPublisher.NOTIFICATION, pNotification);
         PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode()
                 , lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
