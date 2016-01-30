@@ -1,7 +1,6 @@
 package io.theappx.simpletodo.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +39,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         String title = lTodoItem.getTitle();
         String lDescription = lTodoItem.getDescription();
-
-        Log.d("facebook", "title=" + title + " description=" + lDescription);
 
         holder.titleTextView.setText(title);
 

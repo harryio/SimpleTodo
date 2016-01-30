@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -284,6 +285,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(mTodoItem.getTitle()) && !isNewTodo) {
+                    titleTextLayout.setError(getString(R.string.error_empty_title));
+                    return;
+                }
                 onBackPressed();
             }
         });
@@ -381,9 +386,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
-            if (TextUtils.isEmpty(mTodoItem.getTitle())) {
-                titleTextLayout.setError(getString(R.string.error_empty_title));
-                return;
+            if (TextUtils.isEmpty(titleEditText.getText())) {
+                mTodoItem.setTitle(mCloneTodoItem.getTitle());
             }
 
             storeItemToDatabase();
@@ -399,6 +403,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
             }
+        } else {
+            Log.i("CreateTodoActivity", "Item not changed");
         }
     }
 

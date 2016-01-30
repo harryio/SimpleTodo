@@ -107,23 +107,27 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isChanged(TodoItem pCloneTodoItem) {
-        return mTitle.equals(pCloneTodoItem.getTitle())
-                && mDescription.equals(pCloneTodoItem.getDescription())
+        return !(this.mTitle.equals(pCloneTodoItem.getTitle())
+                && this.mDescription.equals(pCloneTodoItem.getDescription())
                 && isRemindStatusChanged(pCloneTodoItem)
                 && isDateChanged(pCloneTodoItem)
-                && isTimeChanged(pCloneTodoItem);
-    }
-
-    public boolean isDateChanged(TodoItem pCloneTodoItem) {
-        return shouldRemind && mDate.equals(pCloneTodoItem.getDate());
-    }
-
-    public boolean isTimeChanged(TodoItem pCloneTodoItem) {
-        return shouldRemind && mTime.equals(pCloneTodoItem.getTime());
+                && isTimeChanged(pCloneTodoItem));
     }
 
     public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {
-        return shouldRemind == pCloneTodoItem.shouldBeReminded();
+        return this.shouldRemind == pCloneTodoItem.shouldBeReminded();
+    }
+
+    public boolean isDateChanged(TodoItem pCloneTodoItem) {
+        return this.shouldRemind && this.mDate.equals(pCloneTodoItem.getDate());
+    }
+
+    public boolean isTimeChanged(TodoItem pCloneTodoItem) {
+        return this.shouldRemind && this.mTime.equals(pCloneTodoItem.getTime());
+    }
+
+    public String getUniqueId() {
+        return mUniqueId;
     }
 
     @Override
@@ -150,4 +154,18 @@ public class TodoItem implements Parcelable {
             return new TodoItem[size];
         }
     };
+
+
+
+    @Override
+    public String toString() {
+        return "TodoItem{" +
+                "mUniqueId='" + mUniqueId + '\'' +
+                ", mTitle='" + mTitle + '\'' +
+                ", mDescription='" + mDescription + '\'' +
+                ", mDate='" + mDate + '\'' +
+                ", mTime='" + mTime + '\'' +
+                ", shouldRemind=" + shouldRemind +
+                '}';
+    }
 }
