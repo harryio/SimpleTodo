@@ -19,7 +19,9 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -166,6 +168,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpTitleAndDescpEditText() {
+        titleEditText.requestFocus();
+        showSoftKeyboard();
+        if (!TextUtils.isEmpty(mTodoItem.getTitle())) titleEditText.setSelection(mTodoItem.getTitle().length());
+
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -213,6 +219,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mTodoItem.setShouldRemind(isChecked);
+                hideSoftKeyboardFromView(titleEditText);
+                hideSoftKeyboardFromView(descriptionEditText);
 
                 if (isChecked) {
                     Date mCalendarTime = mCalendar.getTime();
@@ -223,8 +231,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
                     animateInRemindView();
                 } else {
                     animateOutRemindView();
-                    mTodoItem.setDate(null);
-                    mTodoItem.setTime(null);
                 }
             }
         });
@@ -415,6 +421,21 @@ public class CreateTodoActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         onActivityExit();
+        hideSoftKeyboard();
         super.onBackPressed();
+    }
+
+    private void hideSoftKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    private void hideSoftKeyboardFromView(View view) {
+        view.clearFocus();
+        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void showSoftKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }

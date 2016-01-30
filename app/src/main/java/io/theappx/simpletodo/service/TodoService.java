@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
-import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
 
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
@@ -88,13 +86,11 @@ public class TodoService extends IntentService {
 
     private void handleActionSaveTodo(TodoItem pTodoItem) {
         StorIOSQLite lStorIoSQLite = StorIOProvider.getInstance(getApplicationContext());
-        PutResult putResult = lStorIoSQLite
+        lStorIoSQLite
                 .put()
                 .object(pTodoItem)
                 .prepare()
                 .executeAsBlocking();
-        Log.i("TodoService", "Inside saveTodo");
-        Log.i("TodoService", "Was updated: " + putResult.wasUpdated());
     }
 
     private void handleActionDeleteTodo(TodoItem todoItem) {
