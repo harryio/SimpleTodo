@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
@@ -139,6 +140,11 @@ public class TodoService extends IntentService {
                 .setContentTitle(pTodoItem.getTitle())
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setAutoCancel(true);
+
+        String description = pTodoItem.getDescription();
+        if (!TextUtils.isEmpty(description)) {
+            lBuilder.setContentText(description);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int color = ContextCompat.getColor(this, R.color.colorPrimary);

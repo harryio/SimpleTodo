@@ -119,15 +119,11 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isDateChanged(TodoItem pCloneTodoItem) {
-        return this.shouldRemind && this.mDate.equals(pCloneTodoItem.getDate());
+        return this.shouldRemind && !this.mDate.equals(pCloneTodoItem.getDate());
     }
 
     public boolean isTimeChanged(TodoItem pCloneTodoItem) {
-        return this.shouldRemind && this.mTime.equals(pCloneTodoItem.getTime());
-    }
-
-    public String getUniqueId() {
-        return mUniqueId;
+        return this.shouldRemind && !this.mTime.equals(pCloneTodoItem.getTime());
     }
 
     @Override
@@ -154,8 +150,6 @@ public class TodoItem implements Parcelable {
             return new TodoItem[size];
         }
     };
-
-
 
     @Override
     public String toString() {
