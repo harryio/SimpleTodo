@@ -10,8 +10,11 @@ public class FormatUtils {
     public static final String TIME_FORMAT = "K:mm a";
     public static final String TIME_FORMAT_24_HOUR = "k:mm";
     public static final String DATE_FORMAT = DAY_FORMAT + " " + TIME_FORMAT;
+    public static final String COMPACT_DATE_FORMAT = "MMM d, ''yy";
+    public static final String COMPACT_DATE_FORMAT_24_HOUR = "MMM D, yy";
 
-    private FormatUtils(){}
+    private FormatUtils() {
+    }
 
     public static Date getDateFromString(String lString) {
         SimpleDateFormat lSimpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
@@ -42,5 +45,14 @@ public class FormatUtils {
     public static String getStringFromDate(Date pDate) {
         SimpleDateFormat lSimpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
         return lSimpleDateFormat.format(pDate);
+    }
+
+    public static String getCompactStringFromDate(Date date, boolean is24Hour) {
+        if (DateUtils.isToday(date)) return "Today";
+        if (DateUtils.isWithinDaysFuture(date, 1)) return "Tomorrow";
+        SimpleDateFormat simpleDateFormat = is24Hour ?
+                new SimpleDateFormat(COMPACT_DATE_FORMAT_24_HOUR, Locale.getDefault()) :
+                new SimpleDateFormat(COMPACT_DATE_FORMAT, Locale.getDefault());
+        return simpleDateFormat.format(date);
     }
 }

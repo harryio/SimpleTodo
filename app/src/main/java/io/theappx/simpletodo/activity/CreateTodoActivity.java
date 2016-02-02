@@ -6,9 +6,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -95,6 +97,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_todo);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+        }
         ButterKnife.bind(this);
 
         mCalendar = Calendar.getInstance();
@@ -210,9 +216,9 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private void setUpSwitchCompat() {
         remindSwitch.setChecked(mTodoItem.shouldBeReminded());
         if (mTodoItem.shouldBeReminded()) {
-            animateInRemindView();
+            remindView.setVisibility(View.VISIBLE);
         } else {
-            animateOutRemindView();
+            remindView.setVisibility(View.GONE);
         }
 
         remindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -338,14 +344,17 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        int hourOfDay = mCalendar.get(Calendar.HOUR_OF_DAY);
+        int minute = mCalendar.get(Calendar.MINUTE);
+
         Calendar lCalendar = Calendar.getInstance();
-        lCalendar.set(year, monthOfYear, dayOfMonth);
+        lCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
 
         Date lDate = lCalendar.getTime();
         if (lDate.before(new Date())) {
             Toast.makeText(this, "Woah there! The time machine isn't invented yet", Toast.LENGTH_SHORT).show();
         } else {
-            mCalendar.set(year, monthOfYear, dayOfMonth);
+            mCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
             setTodoDate();
         }
     }
@@ -357,7 +366,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         int dayOfMonth = mCalendar.get(Calendar.DAY_OF_MONTH);
 
         Calendar lCalendar = Calendar.getInstance();
-        lCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute, 0);
+        lCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
 
         Date lDate = lCalendar.getTime();
         if (lDate.before(new Date())) {
@@ -397,20 +406,18 @@ public class CreateTodoActivity extends AppCompatActivity implements
             }
 
             storeItemToDatabase();
+        }
 
-            if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
-                if (mTodoItem.shouldBeReminded()) {
-                    TodoService.startActionCreateAlarm(this, mTodoItem);
-                } else {
-                    TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
-                }
+        if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
+            if (mTodoItem.shouldBeReminded()) {
+                TodoService.startActionCreateAlarm(this, mTodoItem);
             } else {
-                if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                    TodoService.startActionCreateAlarm(this, mTodoItem);
-                }
+                TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
             }
         } else {
-            Log.i("CreateTodoActivity", "Item not changed");
+            if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
+                TodoService.startActionCreateAlarm(this, mTodoItem);
+            }
         }
     }
 

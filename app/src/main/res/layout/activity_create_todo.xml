@@ -53,6 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/title"
+                    android:inputType="textCapSentences"
                     android:singleLine="true"
                     />
 
@@ -68,7 +69,7 @@
                     android:layout_height="100dp"
                     android:gravity="top"
                     android:hint="@string/description"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>

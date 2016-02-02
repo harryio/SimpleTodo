@@ -1,6 +1,8 @@
 package io.theappx.simpletodo.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,11 @@ import io.theappx.simpletodo.utils.FormatUtils;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private List<TodoItem> mTodoItems;
     private OnItemClickListener mOnItemClickListener;
+    private Context context;
 
-    public TodoAdapter() {
+    public TodoAdapter(Context context) {
         mTodoItems = Collections.emptyList();
+        this.context = context;
     }
 
     @Override
@@ -47,7 +51,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
         if (lTodoItem.shouldBeReminded()) {
-            String lDateTime = FormatUtils.getStringFromDate(lTodoItem.getCompleteDate());
+            String lDateTime = FormatUtils.getCompactStringFromDate(lTodoItem.getCompleteDate(),
+                    DateFormat.is24HourFormat(context));
             holder.timerView.setVisibility(View.VISIBLE);
             holder.timerTextView.setText(lDateTime);
         } else {

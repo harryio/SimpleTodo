@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
@@ -135,7 +136,7 @@ public class TodoService extends IntentService {
     }
 
     private Notification getNotification(TodoItem pTodoItem) {
-        Notification.Builder lBuilder = new Notification.Builder(this);
+        NotificationCompat.Builder lBuilder = new NotificationCompat.Builder(this);
         lBuilder.setTicker(pTodoItem.getTitle())
                 .setContentTitle(pTodoItem.getTitle())
                 .setSmallIcon(R.drawable.ic_alarm)
@@ -143,7 +144,7 @@ public class TodoService extends IntentService {
 
         String description = pTodoItem.getDescription();
         if (!TextUtils.isEmpty(description)) {
-            lBuilder.setContentText(description);
+            lBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(description));
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

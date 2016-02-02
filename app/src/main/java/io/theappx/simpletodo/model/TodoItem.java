@@ -78,7 +78,7 @@ public class TodoItem implements Parcelable {
     }
 
     public String getTime() {
-        if (mDate != null) return mDate;
+        if (mTime != null) return mTime;
         else throw new NullPointerException("Time not set");
     }
 
@@ -107,15 +107,15 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isChanged(TodoItem pCloneTodoItem) {
-        return !(this.mTitle.equals(pCloneTodoItem.getTitle())
-                && this.mDescription.equals(pCloneTodoItem.getDescription())
-                && isRemindStatusChanged(pCloneTodoItem)
-                && isDateChanged(pCloneTodoItem)
-                && isTimeChanged(pCloneTodoItem));
+        return !(this.mTime.equals(pCloneTodoItem.getTitle()))
+                || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
+                || isRemindStatusChanged(pCloneTodoItem)
+                || isDateChanged(pCloneTodoItem)
+                || isTimeChanged(pCloneTodoItem);
     }
 
     public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {
-        return this.shouldRemind == pCloneTodoItem.shouldBeReminded();
+        return !this.shouldRemind == pCloneTodoItem.shouldBeReminded();
     }
 
     public boolean isDateChanged(TodoItem pCloneTodoItem) {

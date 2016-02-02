@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         //TODO Set number of columns according to available width
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL));
-        mTodoAdapter = new TodoAdapter();
+        mTodoAdapter = new TodoAdapter(this);
         mTodoAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mTodoAdapter);
     }

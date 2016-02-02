@@ -18,6 +18,8 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             tools:text="Bring 2kg of milk"/>
 
@@ -26,9 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:maxHeight="100dp"
+            android:maxLines="8"
+            android:ellipsize="end"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-            tools:layout_height="100dp"
             tools:text="For making cake"/>
 
         <LinearLayout
@@ -36,12 +38,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="8dp">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_alarm_on"/>
+                android:src="@drawable/ic_alarm_on"
+                tools:ignore="contentDescription"/>
 
             <TextView
                 android:id="@+id/tv_timer"
