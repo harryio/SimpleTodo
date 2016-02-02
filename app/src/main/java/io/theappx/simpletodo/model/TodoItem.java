@@ -16,9 +16,9 @@ public class TodoItem implements Parcelable {
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_ID, key = true)
     String mUniqueId;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TITLE)
-    String mTitle;
+    String mTitle = "";
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DESCRIPTION)
-    String mDescription;
+    String mDescription = "";
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DATE)
     String mDate;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TIME)
@@ -107,11 +107,12 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isChanged(TodoItem pCloneTodoItem) {
-        return !(this.mTime.equals(pCloneTodoItem.getTitle()))
-                || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
-                || isRemindStatusChanged(pCloneTodoItem)
-                || isDateChanged(pCloneTodoItem)
-                || isTimeChanged(pCloneTodoItem);
+        return pCloneTodoItem != null &&
+                (!(this.mTitle.equals(pCloneTodoItem.getTitle()))
+                        || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
+                        || isRemindStatusChanged(pCloneTodoItem)
+                        || isDateChanged(pCloneTodoItem)
+                        || isTimeChanged(pCloneTodoItem));
     }
 
     public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {

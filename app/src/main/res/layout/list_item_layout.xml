@@ -1,63 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView android:id="@+id/item_root_view"
-                                    xmlns:android="http://schemas.android.com/apk/res/android"
-                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                                    xmlns:tools="http://schemas.android.com/tools"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    card_view:contentPadding="8dp"
-                                    card_view:cardElevation="@dimen/card_shadow"
-                                    card_view:cardUseCompatPadding="true">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foreground="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/item_root_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            tools:text="Bring 2kg of milk"/>
-
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:maxLines="8"
-            android:ellipsize="end"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-            tools:text="For making cake"/>
+        card_view:cardElevation="@dimen/card_shadow"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="8dp">
 
         <LinearLayout
-            android:id="@+id/v_timer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_alarm_on"
-                tools:ignore="contentDescription"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textStyle="italic"
-                tools:text="Jan 17, 2:50am"/>
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                tools:text="Bring 2kg of milk"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="8"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+                tools:text="For making cake"/>
+
+            <LinearLayout
+                android:id="@+id/v_timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_alarm_on"
+                    tools:ignore="contentDescription"/>
+
+                <TextView
+                    android:id="@+id/tv_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textStyle="italic"
+                    tools:text="Jan 17, 2:50am"/>
+
+            </LinearLayout>
 
         </LinearLayout>
+    </android.support.v7.widget.CardView>
 
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+</FrameLayout>

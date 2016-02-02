@@ -1,6 +1,7 @@
 package io.theappx.simpletodo.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,12 +18,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.helper.ItemTouchHelperAdapter;
+import io.theappx.simpletodo.helper.ItemTouchHelperViewHolder;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.FormatUtils;
 
-public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
+public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
+        implements ItemTouchHelperAdapter {
     private List<TodoItem> mTodoItems;
     private OnItemClickListener mOnItemClickListener;
+    private OnItemDismissListener onItemDismissListener;
     private Context context;
 
     public TodoAdapter(Context context) {
@@ -66,11 +72,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     }
 
     public void setTodoItems(List<TodoItem> pTodoItems) {
-        mTodoItems = pTodoItems;
+        mTodoItems = new ArrayList<>(pTodoItems);
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder
+            implements ItemTouchHelperViewHolder {
         @Bind(R.id.tv_title)
         TextView titleTextView;
         @Bind(R.id.tv_description)
@@ -101,13 +108,42 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         public void setTodoItem(TodoItem pTodoItem) {
             mTodoItem = pTodoItem;
         }
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
+        }
     }
 
     public interface OnItemClickListener {
         void onListItemClick(TodoItem pTodoItem);
     }
 
+    public interface OnItemDismissListener {
+        void onItemDismissed(int position, TodoItem todoItem);
+    }
+
     public void setOnItemClickListener(OnItemClickListener pOnItemClickListener) {
         mOnItemClickListener = pOnItemClickListener;
+    }
+
+    public void setOnItemDismissListener(OnItemDismissListener onItemDismissListener) {
+        this.onItemDismissListener = onItemDismissListener;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        if (onItemDismissListener != null) {
+            onItemDismissListener.onItemDismissed(position, mTodoItems.get(position));
+        } else
+            throw new NullPointerException("OnItemDismissListener not implemented");
+
+        mTodoItems.remove(position);
+        notifyItemRemoved(position);
     }
 }

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,6 +20,7 @@ import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.database.TodoContract;
+import io.theappx.simpletodo.helper.SimpleItemTouchHelperCallback;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.StorIOProvider;
 import rx.Subscriber;
@@ -26,14 +28,14 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends AppCompatActivity
-        implements TodoAdapter.OnItemClickListener {
+        implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    TodoAdapter mTodoAdapter;
+    private TodoAdapter mTodoAdapter;
     private Subscription mSubscription;
 
     @Override
@@ -85,9 +87,16 @@ public class MainActivity extends AppCompatActivity
         //TODO Set number of columns according to available width
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL));
+
         mTodoAdapter = new TodoAdapter(this);
         mTodoAdapter.setOnItemClickListener(this);
+        mTodoAdapter.setOnItemDismissListener(this);
+
         recyclerView.setAdapter(mTodoAdapter);
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mTodoAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @OnClick(R.id.fab)
@@ -98,6 +107,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListItemClick(TodoItem pTodoItem) {
         startActivity(CreateTodoActivity.getCallingIntent(this, pTodoItem));
+    }
+
+    @Override
+    public void onItemDismissed(int position, TodoItem todoItem) {
+
     }
 
     @Override
