@@ -115,9 +115,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         return mTodoItems.size();
     }
 
-    public void setTodoItems(List<TodoItem> pTodoItems) {
+    public void setTodoItems(List<TodoItem> pTodoItems, boolean shouldReverse) {
         ArrayList<TodoItem> itemArrayList = new ArrayList<>(pTodoItems);
-        Collections.reverse(itemArrayList);
+        if (shouldReverse)
+            Collections.reverse(itemArrayList);
         mTodoItems = itemArrayList;
         notifyDataSetChanged();
     }

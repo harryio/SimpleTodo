@@ -39,8 +39,10 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends AppCompatActivity
         implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
-    public static final int REQUEST_CODE_ITEM_STATUS = 1;
-    public static final int REQUEST_CODE_SAVE = 2;
+    private static final int REQUEST_CODE_ITEM_STATUS = 1;
+    private static final int REQUEST_CODE_SAVE = 2;
+    private static final String STATE_LIST = "io.theappx.statelist";
+    private static final String STATE_SELECTED_POSITION = "io.theappx.stateSelectedPosition";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -62,7 +64,27 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         setUpRecyclerView();
-        loadData();
+        if (savedInstanceState == null) {
+            loadData();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<TodoItem> itemArrayList = new ArrayList<>(mTodoAdapter.getCurrentAdapterList());
+        outState.putParcelableArrayList(STATE_LIST, itemArrayList);
+        outState.putInt(STATE_SELECTED_POSITION, selectedTodoPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        ArrayList<TodoItem> todoItems = savedInstanceState.getParcelableArrayList(STATE_LIST);
+        selectedTodoPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+        mTodoAdapter.setTodoItems(todoItems, false);
     }
 
     private void loadData() {
@@ -92,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onNext(List<TodoItem> t) {
-                        mTodoAdapter.setTodoItems(t);
+                        mTodoAdapter.setTodoItems(t, true);
                     }
                 });
 
@@ -213,13 +235,13 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_delete_all:
                 final List<TodoItem> deletedItems = mTodoAdapter.getCurrentAdapterList();
                 if (deletedItems.size() > 0) {
-                    mTodoAdapter.setTodoItems(new ArrayList<TodoItem>());
+                    mTodoAdapter.setTodoItems(new ArrayList<TodoItem>(), false);
                     Snackbar snackbar = Snackbar
                             .make(coordinatorLayout, "All Items deleted", Snackbar.LENGTH_LONG)
                             .setAction("UNDO", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    mTodoAdapter.setTodoItems(deletedItems);
+                                    mTodoAdapter.setTodoItems(deletedItems, false);
                                 }
                             })
                             .setCallback(new Snackbar.Callback() {
