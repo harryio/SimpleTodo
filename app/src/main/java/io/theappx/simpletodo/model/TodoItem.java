@@ -34,8 +34,8 @@ public class TodoItem implements Parcelable {
         this.mUniqueId = other.mUniqueId;
         this.mTitle = other.mTitle;
         this.mDescription = other.mDescription;
-        this.time = other.getTime();
         this.shouldRemind = other.shouldRemind;
+        this.time = other.time;
     }
 
     public String getTitle() {

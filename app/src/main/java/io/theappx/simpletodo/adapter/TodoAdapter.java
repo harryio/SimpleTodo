@@ -29,7 +29,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     private OnItemClickListener mOnItemClickListener;
     private OnItemDismissListener onItemDismissListener;
     private Context context;
-    private int listSize;
 
     public TodoAdapter(Context context) {
         mTodoItems = Collections.emptyList();
@@ -88,7 +87,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TodoItem lTodoItem = mTodoItems.get((listSize - position) - 1);
+        TodoItem lTodoItem = mTodoItems.get(position);
 
         holder.setTodoItem(lTodoItem);
 
@@ -117,14 +116,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     }
 
     public void setTodoItems(List<TodoItem> pTodoItems) {
-        mTodoItems = new ArrayList<>(pTodoItems);
-        listSize = pTodoItems.size();
+        ArrayList<TodoItem> itemArrayList = new ArrayList<>(pTodoItems);
+        Collections.reverse(itemArrayList);
+        mTodoItems = itemArrayList;
         notifyDataSetChanged();
     }
 
     public void addTodoItem(int position, TodoItem todoItem) {
         mTodoItems.add(position, todoItem);
-        listSize++;
         notifyItemInserted(position);
     }
 
@@ -136,7 +135,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
             throw new NullPointerException("OnItemDismissListener not implemented");
 
         mTodoItems.remove(position);
-        listSize--;
         notifyItemRemoved(position);
     }
 
