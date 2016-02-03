@@ -10,14 +10,12 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
-import io.theappx.simpletodo.utils.FormatUtils;
 import io.theappx.simpletodo.utils.StorIOProvider;
 
 /**
@@ -121,9 +119,7 @@ public class TodoService extends IntentService {
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
-        Log.d("TodoService", "Time in service is: " +
-                FormatUtils.getStringFromDate(pTodoItem.getDateInstance()));
-//        scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        scheduleNotification(pTodoItem, getNotification(pTodoItem));
     }
 
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
@@ -144,6 +140,7 @@ public class TodoService extends IntentService {
         lBuilder.setTicker(pTodoItem.getTitle())
                 .setContentTitle(pTodoItem.getTitle())
                 .setSmallIcon(R.drawable.ic_alarm)
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true);
 
         String description = pTodoItem.getDescription();
