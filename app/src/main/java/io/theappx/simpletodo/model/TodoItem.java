@@ -9,7 +9,6 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 import java.util.Date;
 
 import io.theappx.simpletodo.database.TodoContract;
-import io.theappx.simpletodo.utils.FormatUtils;
 
 @StorIOSQLiteType(table = TodoContract.TABLE_NAME)
 public class TodoItem implements Parcelable {
@@ -19,10 +18,8 @@ public class TodoItem implements Parcelable {
     String mTitle = "";
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DESCRIPTION)
     String mDescription = "";
-    @StorIOSQLiteColumn(name = TodoContract.COLUMN_DATE)
-    String mDate;
-    @StorIOSQLiteColumn(name = TodoContract.COLUMN_TIME)
-    String mTime;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_TIME_MILLIS)
+    long time;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_REMIND)
     boolean shouldRemind;
 
@@ -37,18 +34,8 @@ public class TodoItem implements Parcelable {
         this.mUniqueId = other.mUniqueId;
         this.mTitle = other.mTitle;
         this.mDescription = other.mDescription;
-        this.mDate = other.mDate;
-        this.mTime = other.mTime;
+        this.time = other.getTime();
         this.shouldRemind = other.shouldRemind;
-    }
-
-    protected TodoItem(Parcel in) {
-        this.mUniqueId = in.readString();
-        this.mTitle = in.readString();
-        this.mDescription = in.readString();
-        this.mDate = in.readString();
-        this.mTime = in.readString();
-        this.shouldRemind = in.readByte() != 0;
     }
 
     public String getTitle() {
@@ -67,31 +54,22 @@ public class TodoItem implements Parcelable {
         mDescription = pDescription;
     }
 
-    public String getDate() {
-        if (shouldRemind) return mDate;
-        else throw new IllegalStateException("Reminder not set");
+    public long getTime() {
+        if (shouldRemind)
+            return time;
+        else
+            throw new IllegalStateException("Set reminder before getting time value");
     }
 
-    public void setDate(String pDate) {
-        if (shouldRemind) mDate = pDate;
-        else throw new IllegalStateException("Reminder not set");
+    public void setTime(long time) {
+        if (shouldRemind) this.time = time;
     }
 
-    public String getTime() {
-        if (mTime != null) return mTime;
-        else throw new NullPointerException("Time not set");
-    }
-
-    public void setTime(String pTime) {
-        if (shouldRemind) mTime = pTime;
-        else throw new IllegalStateException("Reminder not set");
-    }
-
-    public Date getCompleteDate() {
-        if (mDate != null && mTime != null) {
-            String lDateWithTime = mDate + " " + mTime;
-            return FormatUtils.getDateFromString(lDateWithTime);
-        } else throw new NullPointerException("Date or Time is null");
+    public Date getDateInstance() {
+        if (shouldRemind)
+            return new Date(time);
+        else
+            throw new IllegalStateException("Set reminder before getting Date instance");
     }
 
     public String getId() {
@@ -107,11 +85,9 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isChanged(TodoItem pCloneTodoItem) {
-        return pCloneTodoItem != null &&
-                (!(this.mTitle.equals(pCloneTodoItem.getTitle()))
+        return (!(this.mTitle.equals(pCloneTodoItem.getTitle()))
                         || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
                         || isRemindStatusChanged(pCloneTodoItem)
-                        || isDateChanged(pCloneTodoItem)
                         || isTimeChanged(pCloneTodoItem));
     }
 
@@ -119,12 +95,19 @@ public class TodoItem implements Parcelable {
         return !this.shouldRemind == pCloneTodoItem.shouldBeReminded();
     }
 
-    public boolean isDateChanged(TodoItem pCloneTodoItem) {
-        return this.shouldRemind && !this.mDate.equals(pCloneTodoItem.getDate());
+    public boolean isTimeChanged(TodoItem cloneTodoItem) {
+        return !(this.time == cloneTodoItem.getTime());
     }
 
-    public boolean isTimeChanged(TodoItem pCloneTodoItem) {
-        return this.shouldRemind && !this.mTime.equals(pCloneTodoItem.getTime());
+    @Override
+    public String toString() {
+        return "TodoItem{" +
+                "mUniqueId='" + mUniqueId + '\'' +
+                ", mTitle='" + mTitle + '\'' +
+                ", mDescription='" + mDescription + '\'' +
+                ", mTime='" + new Date(time).toString() + '\'' +
+                ", shouldRemind=" + shouldRemind +
+                '}';
     }
 
     @Override
@@ -137,12 +120,19 @@ public class TodoItem implements Parcelable {
         dest.writeString(this.mUniqueId);
         dest.writeString(this.mTitle);
         dest.writeString(this.mDescription);
-        dest.writeString(this.mDate);
-        dest.writeString(this.mTime);
+        dest.writeLong(this.time);
         dest.writeByte(shouldRemind ? (byte) 1 : (byte) 0);
     }
 
-    public static final Parcelable.Creator<TodoItem> CREATOR = new Parcelable.Creator<TodoItem>() {
+    protected TodoItem(Parcel in) {
+        this.mUniqueId = in.readString();
+        this.mTitle = in.readString();
+        this.mDescription = in.readString();
+        this.time = in.readLong();
+        this.shouldRemind = in.readByte() != 0;
+    }
+
+    public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
         public TodoItem createFromParcel(Parcel source) {
             return new TodoItem(source);
         }
@@ -151,16 +141,4 @@ public class TodoItem implements Parcelable {
             return new TodoItem[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "TodoItem{" +
-                "mUniqueId='" + mUniqueId + '\'' +
-                ", mTitle='" + mTitle + '\'' +
-                ", mDescription='" + mDescription + '\'' +
-                ", mDate='" + mDate + '\'' +
-                ", mTime='" + mTime + '\'' +
-                ", shouldRemind=" + shouldRemind +
-                '}';
-    }
 }

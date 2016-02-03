@@ -37,7 +37,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends AppCompatActivity
         implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
-    public static final int REQUEST_CODE = 1;
+    public static final int REQUEST_CODE_DELETE = 1;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity
                 )
                 .prepare()
                 .createObservable()
-                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<TodoItem>>() {
                     @Override
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListItemClick(int position, TodoItem pTodoItem) {
         selectedTodoPosition = position;
-        startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE);
+        startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE_DELETE);
     }
 
     @Override
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_DELETE) {
             if (resultCode == RESULT_OK) {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

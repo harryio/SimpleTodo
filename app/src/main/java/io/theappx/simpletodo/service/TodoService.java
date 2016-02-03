@@ -10,12 +10,14 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
+import io.theappx.simpletodo.utils.FormatUtils;
 import io.theappx.simpletodo.utils.StorIOProvider;
 
 /**
@@ -119,7 +121,9 @@ public class TodoService extends IntentService {
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
-        scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        Log.d("TodoService", "Time in service is: " +
+                FormatUtils.getStringFromDate(pTodoItem.getDateInstance()));
+//        scheduleNotification(pTodoItem, getNotification(pTodoItem));
     }
 
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
@@ -129,7 +133,7 @@ public class TodoService extends IntentService {
         PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode()
                 , lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long timeInMillis = pTodoItem.getCompleteDate().getTime();
+        long timeInMillis = pTodoItem.getDateInstance().getTime();
 
         AlarmManager lAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         lAlarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);

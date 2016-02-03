@@ -112,7 +112,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 mTodoItem = new TodoItem(UUID.randomUUID().toString());
                 isNewTodo = true;
             } else {
-                if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+                if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
                 fillTodoDataInEditText();
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
@@ -165,7 +165,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         isNewTodo = savedInstanceState.getBoolean(STATE_NEW_INSTANCE);
 
         if (!isNewTodo) {
-            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getCompleteDate());
+            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
             fillTodoDataInEditText();
         }
 
@@ -228,9 +228,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 hideSoftKeyboardFromView(descriptionEditText);
 
                 if (isChecked) {
-                    Date mCalendarTime = mCalendar.getTime();
-                    mTodoItem.setDate(FormatUtils.getStringFromDate(mCalendarTime));
-                    mTodoItem.setTime(FormatUtils.getTimeStringFromDate(mCalendarTime));
+                    mTodoItem.setTime(mCalendar.getTimeInMillis());
 
                     setUpDateAndTimeEditText();
                     animateInRemindView();
@@ -373,14 +371,12 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setTodoDate() {
-        String dateString = FormatUtils.getDayStringFromDate(mCalendar.getTime());
-        mTodoItem.setDate(dateString);
+        mTodoItem.setTime(mCalendar.getTimeInMillis());
         setUpDateEditText();
     }
 
     private void setTodoTime() {
-        String timeString = FormatUtils.getTimeStringFromDate(mCalendar.getTime());
-        mTodoItem.setTime(timeString);
+        mTodoItem.setTime(mCalendar.getTimeInMillis());
         setUpTimeEditText();
     }
 
@@ -410,7 +406,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
             }
         } else {
-            if (mTodoItem.isDateChanged(mCloneTodoItem) || mTodoItem.isTimeChanged(mCloneTodoItem)) {
+            if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
                 TodoService.startActionCreateAlarm(this, mTodoItem);
             }
         }
