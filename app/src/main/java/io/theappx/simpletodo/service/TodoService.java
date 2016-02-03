@@ -13,6 +13,9 @@ import android.text.TextUtils;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
@@ -30,9 +33,11 @@ public class TodoService extends IntentService {
     private static final String ACTION_DELETE_TODO = "io.theappx.simpletodo.action.DELETETODO";
     private static final String ACTION_CREATE_ALARM = "io.theappx.simpletodo.action.CREATEALARM";
     private static final String ACTION_DELETE_ALARM = "io.theappx.simpletodo.action.DELETEALARM";
+    private static final String ACTION_DELETE_ALL = "io.theappx.simpletodo.action.DELETEALL";
 
     private static final String EXTRA_TODO = "io.theappx.simpletodo.extra.TODO";
     private static final String EXTRA_TODO_ID = "io.theappx.simpletodo.extra.TODO_ID";
+    private static final String EXTRA_TODO_LIST = "io.theappx.simpletodo.extra.TODO_LIST";
 
     public TodoService() {
         super("TodoService");
@@ -66,6 +71,14 @@ public class TodoService extends IntentService {
         pContext.startService(intent);
     }
 
+    public static void startActionDeleteAll(Context context, List<TodoItem> todoItems) {
+        Intent intent = new Intent(context, TodoService.class);
+        intent.setAction(ACTION_DELETE_ALL);
+        ArrayList<TodoItem> todoItemArrayList = new ArrayList<>(todoItems);
+        intent.putParcelableArrayListExtra(EXTRA_TODO_LIST, todoItemArrayList);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -82,6 +95,9 @@ public class TodoService extends IntentService {
             } else if (ACTION_DELETE_ALARM.equals(action)) {
                 final String todoItemId = intent.getParcelableExtra(EXTRA_TODO_ID);
                 handleActionDeleteAlarm(todoItemId);
+            } else if (ACTION_DELETE_ALL.equals(action)) {
+                final List<TodoItem> todoItems = intent.getParcelableArrayListExtra(EXTRA_TODO_LIST);
+                handleActionDeleteAll(todoItems);
             }
         }
     }
@@ -105,6 +121,23 @@ public class TodoService extends IntentService {
 
         if (todoItem.shouldBeReminded())
             handleActionDeleteAlarm(todoItem.getId());
+    }
+
+    private void handleActionDeleteAll(List<TodoItem> todoItems) {
+        StorIOSQLite storIOSQLite = StorIOProvider.getInstance(getApplicationContext());
+        storIOSQLite
+                .delete()
+                .objects(todoItems)
+                .prepare()
+                .executeAsBlocking();
+
+        int length = todoItems.size();
+        for (int i = 0; i < length; ++i) {
+            TodoItem todoItem = todoItems.get(i);
+            if (todoItem.shouldBeReminded()) {
+                handleActionDeleteAlarm(todoItem.getId());
+            }
+        }
     }
 
     private void handleActionDeleteAlarm(String todoItemId) {

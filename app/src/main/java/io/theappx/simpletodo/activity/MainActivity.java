@@ -15,10 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemDismissed(final int position, final TodoItem todoItem) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Moved to trash", Snackbar.LENGTH_LONG)
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Item Moved to trash", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -204,10 +206,40 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_delete_all:
+                final List<TodoItem> deletedItems = mTodoAdapter.getCurrentAdapterList();
+                if (deletedItems.size() > 0) {
+                    mTodoAdapter.setTodoItems(new ArrayList<TodoItem>());
+                    Snackbar snackbar = Snackbar
+                            .make(coordinatorLayout, "All Items deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mTodoAdapter.setTodoItems(deletedItems);
+                                }
+                            })
+                            .setCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    if (!(event == DISMISS_EVENT_ACTION)) {
+                                        TodoService.startActionDeleteAll(MainActivity.this, deletedItems);
+                                    }
+                                }
+                            });
+                    snackbar.setActionTextColor(Color.RED);
+                    View sbView = snackbar.getView();
+                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.YELLOW);
+                    snackbar.show();
+                } else {
+                    Toast.makeText(MainActivity.this, "No items to be deleted", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

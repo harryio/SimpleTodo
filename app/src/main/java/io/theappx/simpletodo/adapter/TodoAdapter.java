@@ -132,6 +132,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         notifyDataSetChanged();
     }
 
+    public List<TodoItem> getCurrentAdapterList() {
+        return mTodoItems;
+    }
+
     @Override
     public void onItemDismiss(int position) {
         if (onItemDismissListener != null) {
