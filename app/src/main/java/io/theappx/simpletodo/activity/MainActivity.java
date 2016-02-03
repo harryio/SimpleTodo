@@ -1,7 +1,9 @@
 package io.theappx.simpletodo.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +37,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends AppCompatActivity
         implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
+    public static final int REQUEST_CODE = 1;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity
 
     private TodoAdapter mTodoAdapter;
     private Subscription mSubscription;
+    private int selectedTodoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +117,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListItemClick(TodoItem pTodoItem) {
-        startActivity(CreateTodoActivity.getCallingIntent(this, pTodoItem));
+    public void onListItemClick(int position, TodoItem pTodoItem) {
+        selectedTodoPosition = position;
+        startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE);
     }
 
     @Override
@@ -140,6 +145,23 @@ public class MainActivity extends AppCompatActivity
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTodoAdapter.onItemDismiss(selectedTodoPosition);
+                    }
+                }, 1000);
+            }
+        }
     }
 
     @Override

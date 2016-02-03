@@ -35,6 +35,50 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         this.context = context;
     }
 
+    static class ViewHolder extends RecyclerView.ViewHolder
+            implements ItemTouchHelperViewHolder {
+        @Bind(R.id.tv_title)
+        TextView titleTextView;
+        @Bind(R.id.tv_description)
+        TextView descriptionTextView;
+        @Bind(R.id.tv_timer)
+        TextView timerTextView;
+        @Bind(R.id.v_timer)
+        LinearLayout timerView;
+
+        private TodoItem mTodoItem;
+        private OnItemClickListener mOnItemClickListener;
+
+        @OnClick(R.id.item_root_view)
+        public void onItemClick() {
+            if (mOnItemClickListener == null)
+                throw new NullPointerException("OnItemClickListener not set");
+
+            mOnItemClickListener.onListItemClick(getAdapterPosition(), mTodoItem);
+        }
+
+        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            mOnItemClickListener = pOnItemClickListener;
+        }
+
+        public void setTodoItem(TodoItem pTodoItem) {
+            mTodoItem = pTodoItem;
+        }
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
+        }
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
@@ -81,52 +125,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         notifyItemInserted(position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder
-            implements ItemTouchHelperViewHolder {
-        @Bind(R.id.tv_title)
-        TextView titleTextView;
-        @Bind(R.id.tv_description)
-        TextView descriptionTextView;
-        @Bind(R.id.tv_timer)
-        TextView timerTextView;
-        @Bind(R.id.v_timer)
-        LinearLayout timerView;
-
-        private TodoItem mTodoItem;
-        private OnItemClickListener mOnItemClickListener;
-
-        @OnClick(R.id.item_root_view)
-        public void onItemClick() {
-            if (mOnItemClickListener == null)
-                throw new NullPointerException("OnItemClickListener not set");
-
-            mOnItemClickListener.onListItemClick(mTodoItem);
-        }
-
-        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-            mOnItemClickListener = pOnItemClickListener;
-        }
-
-        public void setTodoItem(TodoItem pTodoItem) {
-            mTodoItem = pTodoItem;
-        }
-
-        @Override
-        public void onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
-        }
-
-        @Override
-        public void onItemClear() {
-            itemView.setBackgroundColor(0);
-        }
-    }
-
     public interface OnItemClickListener {
-        void onListItemClick(TodoItem pTodoItem);
+        void onListItemClick(int position, TodoItem pTodoItem);
     }
 
     public interface OnItemDismissListener {

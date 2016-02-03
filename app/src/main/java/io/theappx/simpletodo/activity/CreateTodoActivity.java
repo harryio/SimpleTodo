@@ -18,7 +18,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -311,7 +310,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         if (!isNewTodo) {
-                            deleteTodoItem();
+                            setResult(RESULT_OK);
                             finish();
                         }
                         return true;
@@ -320,10 +319,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 return true;
             }
         });
-    }
-
-    private void deleteTodoItem() {
-        TodoService.startActionDeleteTodo(this, mTodoItem);
     }
 
     @OnClick(R.id.et_date)
