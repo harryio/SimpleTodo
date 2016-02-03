@@ -52,6 +52,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private static final String STATE_TODO_CLONE_INSTANCE = "io.theappx.todoCloneInstance";
     private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
 
+    public static final String SAVE_ITEM = "io.theappx.saveItem";
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_title)
@@ -371,6 +373,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 if (mTodoItem.shouldBeReminded()) {
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(SAVE_ITEM, mTodoItem);
+                setResult(RESULT_OK, returnIntent);
             }
             return;
         }
@@ -390,8 +396,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
             }
         } else {
-            if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                TodoService.startActionCreateAlarm(this, mTodoItem);
+            if (mTodoItem.shouldBeReminded()) {
+                if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
+                }
             }
         }
     }
@@ -404,6 +412,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
     public void onBackPressed() {
         onActivityExit();
         hideSoftKeyboard();
+
         super.onBackPressed();
     }
 
