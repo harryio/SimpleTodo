@@ -113,12 +113,13 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:textIsSelectable="false"/>
+                    android:textIsSelectable="false"
+                    tools:ignore="LabelFor"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\@"
+                    android:text="@string/at"
                     android:textColor="@android:color/holo_blue_dark"
                     />
 
@@ -130,19 +131,12 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center"
-                    android:textIsSelectable="false"/>
+                    android:textIsSelectable="false"
+                    tools:ignore="LabelFor"/>
 
             </LinearLayout>
 
         </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_save"/>
 
     </FrameLayout>
 

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -67,8 +66,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
     EditText timeEditText;
     @Bind(R.id.remind_view)
     LinearLayout remindView;
-    @Bind(R.id.fab)
-    FloatingActionButton mFab;
 
     private TodoItem mTodoItem, mCloneTodoItem;
 
@@ -320,12 +317,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
     @OnClick(R.id.et_time)
     public void selectTime() {
         mTimePickerDialog.show(getFragmentManager(), "Choose Time");
-    }
-
-    @OnClick(R.id.fab)
-    public void onFabClick() {
-        onActivityExit();
-        finish();
     }
 
     @Override

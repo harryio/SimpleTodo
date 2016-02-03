@@ -6,4 +6,6 @@
     <string name="remind">Remind Me</string>
     <string name="error_empty_title">Surely, You must have something to do.</string>
     <string name="menu_action_delete">Delete</string>
+    <string name="at">\@</string>
+    <string name="save">Save</string>
 </resources>
