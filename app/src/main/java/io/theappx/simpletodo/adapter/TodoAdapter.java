@@ -76,6 +76,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         notifyDataSetChanged();
     }
 
+    public void addTodoItem(int position, TodoItem todoItem) {
+        mTodoItems.add(position, todoItem);
+        notifyItemInserted(position);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder
             implements ItemTouchHelperViewHolder {
         @Bind(R.id.tv_title)

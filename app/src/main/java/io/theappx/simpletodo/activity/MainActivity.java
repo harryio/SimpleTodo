@@ -1,6 +1,9 @@
 package io.theappx.simpletodo.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -8,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
@@ -22,6 +27,7 @@ import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.database.TodoContract;
 import io.theappx.simpletodo.helper.SimpleItemTouchHelperCallback;
 import io.theappx.simpletodo.model.TodoItem;
+import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.StorIOProvider;
 import rx.Subscriber;
 import rx.Subscription;
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
+    @Bind(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
 
     private TodoAdapter mTodoAdapter;
     private Subscription mSubscription;
@@ -110,8 +118,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemDismissed(int position, TodoItem todoItem) {
+    public void onItemDismissed(final int position, final TodoItem todoItem) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Moved to trash", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mTodoAdapter.addTodoItem(position, todoItem);
+                    }
+                })
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        if (!(event == DISMISS_EVENT_ACTION)) {
+                            TodoService.startActionDeleteTodo(MainActivity.this, todoItem);
+                        }
+                    }
+                });
 
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
     @Override
