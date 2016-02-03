@@ -29,6 +29,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     private OnItemClickListener mOnItemClickListener;
     private OnItemDismissListener onItemDismissListener;
     private Context context;
+    private int listSize;
 
     public TodoAdapter(Context context) {
         mTodoItems = Collections.emptyList();
@@ -87,7 +88,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TodoItem lTodoItem = mTodoItems.get(position);
+        TodoItem lTodoItem = mTodoItems.get((listSize - position) - 1);
 
         holder.setTodoItem(lTodoItem);
 
@@ -117,28 +118,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
     public void setTodoItems(List<TodoItem> pTodoItems) {
         mTodoItems = new ArrayList<>(pTodoItems);
+        listSize = pTodoItems.size();
         notifyDataSetChanged();
     }
 
     public void addTodoItem(int position, TodoItem todoItem) {
         mTodoItems.add(position, todoItem);
+        listSize++;
         notifyItemInserted(position);
-    }
-
-    public interface OnItemClickListener {
-        void onListItemClick(int position, TodoItem pTodoItem);
-    }
-
-    public interface OnItemDismissListener {
-        void onItemDismissed(int position, TodoItem todoItem);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener pOnItemClickListener) {
-        mOnItemClickListener = pOnItemClickListener;
-    }
-
-    public void setOnItemDismissListener(OnItemDismissListener onItemDismissListener) {
-        this.onItemDismissListener = onItemDismissListener;
     }
 
     @Override
@@ -149,6 +136,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
             throw new NullPointerException("OnItemDismissListener not implemented");
 
         mTodoItems.remove(position);
+        listSize--;
         notifyItemRemoved(position);
+    }
+
+    public interface OnItemClickListener {
+        void onListItemClick(int position, TodoItem pTodoItem);
+
+    }
+    public interface OnItemDismissListener {
+        void onItemDismissed(int position, TodoItem todoItem);
+
+    }
+
+    public void setOnItemClickListener(OnItemClickListener pOnItemClickListener) {
+        mOnItemClickListener = pOnItemClickListener;
+    }
+
+    public void setOnItemDismissListener(OnItemDismissListener onItemDismissListener) {
+        this.onItemDismissListener = onItemDismissListener;
     }
 }

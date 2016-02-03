@@ -74,11 +74,11 @@ public class MainActivity extends AppCompatActivity
                 )
                 .prepare()
                 .createObservable()
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<TodoItem>>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
