@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -68,8 +67,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
     EditText timeEditText;
     @Bind(R.id.remind_view)
     LinearLayout remindView;
-    @Bind(R.id.title_text_layout)
-    TextInputLayout titleTextLayout;
     @Bind(R.id.fab)
     FloatingActionButton mFab;
 
@@ -294,10 +291,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(mTodoItem.getTitle()) && !isNewTodo) {
-                    titleTextLayout.setError(getString(R.string.error_empty_title));
-                    return;
-                }
                 onBackPressed();
             }
         });
