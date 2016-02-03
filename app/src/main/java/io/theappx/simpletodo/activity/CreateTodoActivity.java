@@ -53,6 +53,9 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
 
     public static final String SAVE_ITEM = "io.theappx.saveItem";
+    public static final String IS_ITEM_DELETED = "io.theappx.isItemDeleted";
+    public static final String IS_ITEM_UPDATED = "io.theappx.isItemUpdated";
+    public static final String UPDATE_ITEM = "io.theappx.updateItem";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -300,7 +303,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         if (!isNewTodo) {
-                            setResult(RESULT_OK);
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra(IS_ITEM_DELETED, true);
+                            returnIntent.putExtra(IS_ITEM_UPDATED, false);
+                            setResult(RESULT_OK, returnIntent);
                             finish();
                         }
                         return true;
@@ -387,6 +393,12 @@ public class CreateTodoActivity extends AppCompatActivity implements
             }
 
             storeItemToDatabase();
+
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(IS_ITEM_DELETED, false);
+            returnIntent.putExtra(IS_ITEM_UPDATED, true);
+            returnIntent.putExtra(UPDATE_ITEM, mTodoItem);
+            setResult(RESULT_OK, returnIntent);
         }
 
         if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {

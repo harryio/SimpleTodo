@@ -127,6 +127,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         notifyItemInserted(position);
     }
 
+    public void replaceTodoItem(int position, TodoItem todoItem) {
+        mTodoItems.set(position, todoItem);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onItemDismiss(int position) {
         if (onItemDismissListener != null) {

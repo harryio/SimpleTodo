@@ -37,7 +37,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends AppCompatActivity
         implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
-    public static final int REQUEST_CODE_DELETE = 1;
+    public static final int REQUEST_CODE_ITEM_STATUS = 1;
     public static final int REQUEST_CODE_SAVE = 2;
 
     @Bind(R.id.toolbar)
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListItemClick(int position, TodoItem pTodoItem) {
         selectedTodoPosition = position;
-        startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE_DELETE);
+        startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE_ITEM_STATUS);
     }
 
     @Override
@@ -155,32 +155,38 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_DELETE:
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                case REQUEST_CODE_ITEM_STATUS:
+                    boolean isItemDeleted = data
+                            .getBooleanExtra(CreateTodoActivity.IS_ITEM_DELETED, false);
+                    boolean isItemUpdated = data
+                            .getBooleanExtra(CreateTodoActivity.IS_ITEM_UPDATED, true);
+
+                    if (isItemDeleted) {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTodoAdapter.onItemDismiss(selectedTodoPosition);
+                            }
+                        }, 500);
+                    } else if (isItemUpdated) {
+                        TodoItem todoItem = data.getParcelableExtra(CreateTodoActivity.UPDATE_ITEM);
+                        mTodoAdapter.replaceTodoItem(selectedTodoPosition, todoItem);
+                    }
+                    break;
+
+                case REQUEST_CODE_SAVE:
+                    final TodoItem todoItem =
+                            data.getParcelableExtra(CreateTodoActivity.SAVE_ITEM);
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mTodoAdapter.onItemDismiss(selectedTodoPosition);
+                            mTodoAdapter.addTodoItem(0, todoItem);
                         }
                     }, 500);
                     break;
 
-                case REQUEST_CODE_SAVE:
-
-            }
-        }
-
-        if (requestCode == REQUEST_CODE_SAVE) {
-            if (resultCode == RESULT_OK) {
-                final TodoItem todoItem =
-                        data.getParcelableExtra(CreateTodoActivity.SAVE_ITEM);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTodoAdapter.addTodoItem(0, todoItem);
-                    }
-                }, 500);
             }
         }
     }
