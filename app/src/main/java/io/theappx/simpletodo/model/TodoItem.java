@@ -96,7 +96,7 @@ public class TodoItem implements Parcelable {
     }
 
     public boolean isTimeChanged(TodoItem cloneTodoItem) {
-        return !(this.time == cloneTodoItem.getTime());
+        return shouldRemind && !(this.time == cloneTodoItem.getTime());
     }
 
     @Override

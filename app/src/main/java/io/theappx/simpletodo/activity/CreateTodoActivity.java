@@ -311,7 +311,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
                         }
                         return true;
                 }
-
                 return true;
             }
         });
