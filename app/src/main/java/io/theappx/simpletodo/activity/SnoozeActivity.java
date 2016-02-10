@@ -1,10 +1,15 @@
 package io.theappx.simpletodo.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,6 +28,7 @@ public class SnoozeActivity extends AppCompatActivity {
     DataLayout dataLayout;
 
     private TodoItem todoItem;
+    private Calendar calendar;
 
     public static Intent getCallingIntent(Context context, TodoItem todoItem) {
         Intent intent = new Intent(context, SnoozeActivity.class);
@@ -34,17 +40,61 @@ public class SnoozeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snooze);
-
         ButterKnife.bind(this);
+
         dataLayout.setDefaultValue("10 minutes");
 
         todoItem = getIntent().getParcelableExtra(ARG_TODO_ITEM);
         titleTextView.setText(todoItem.getTitle());
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(todoItem.getTime());
+        calendar.add(Calendar.MINUTE, 10);
     }
 
     @OnClick(R.id.delete_button)
     public void onDeleteButtonPressed() {
         TodoService.startActionDeleteTodo(this, todoItem);
         finish();
+    }
+
+    @OnClick(R.id.data_layout)
+    public void onDataLayoutClicked() {
+        getDialog().show();
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClicked() {
+        todoItem.setTime(calendar.getTimeInMillis());
+        TodoService.startActionCreateAlarm(this, todoItem);
+    }
+
+    private Dialog getDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] items = {"10 minutes", "30 minutes", "1 hour"};
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(todoItem.getTime());
+
+                switch (which) {
+                    case 0:
+                        calendar.add(Calendar.MINUTE, 10);
+                        break;
+
+                    case 1:
+                        calendar.add(Calendar.MINUTE, 30);
+                        break;
+
+                    case 2:
+                        calendar.add(Calendar.HOUR, 1);
+                        break;
+                }
+
+                SnoozeActivity.this.calendar = calendar;
+            }
+        }).setTitle("Chose snooze time");
+
+        return builder.create();
     }
 }
