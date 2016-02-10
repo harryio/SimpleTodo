@@ -66,6 +66,8 @@ public class SnoozeActivity extends AppCompatActivity {
     public void onFabClicked() {
         todoItem.setTime(calendar.getTimeInMillis());
         TodoService.startActionCreateAlarm(this, todoItem);
+        TodoService.startActionSaveTodo(this, todoItem);
+        finish();
     }
 
     private Dialog getDialog() {

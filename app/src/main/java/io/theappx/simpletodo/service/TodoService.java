@@ -87,7 +87,7 @@ public class TodoService extends IntentService {
             if (ACTION_SAVE_TODO.equals(action)) {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleActionSaveTodo(lTodoItem);
-            } else if(ACTION_DELETE_ALARM.equals(action)) {
+            } else if(ACTION_DELETE_TODO.equals(action)) {
                 final TodoItem todoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleActionDeleteTodo(todoItem);
             } else if (ACTION_CREATE_ALARM.equals(action)) {

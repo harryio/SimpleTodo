@@ -2,8 +2,8 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:data="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -31,14 +31,14 @@
                 android:id="@+id/title_textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="30dp"
-                android:textColor="@color/white"
-                android:textSize="22sp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="22sp"
                 />
 
         </android.support.design.widget.AppBarLayout>
@@ -47,27 +47,27 @@
             android:id="@+id/data_layout"
             android:layout_width="match_parent"
             android:layout_height="?listPreferredItemHeight"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            data:dataTitle="Snooze"
             data:dataIcon="@drawable/ic_snooze"
+            data:dataTitle="Snooze"
             />
 
         <Button
             android:id="@+id/delete_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:drawablePadding="4dp"
-            android:paddingStart="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="40dp"
-            android:paddingEnd="16dp"
-            android:text="@string/delete"
-            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_delete"
-            tools:background="@color/colorPrimary"/>
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/delete"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 
