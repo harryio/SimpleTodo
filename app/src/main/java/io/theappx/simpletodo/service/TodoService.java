@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.activity.SnoozeActivity;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
 import io.theappx.simpletodo.utils.StorIOProvider;
@@ -159,8 +160,8 @@ public class TodoService extends IntentService {
         Intent lIntent = new Intent(this, NotificationPublisher.class);
         lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, pTodoItem.getId().hashCode());
         lIntent.putExtra(NotificationPublisher.NOTIFICATION, pNotification);
-        PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode()
-                , lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode(),
+                lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         long timeInMillis = pTodoItem.getDateInstance().getTime();
 
@@ -169,9 +170,21 @@ public class TodoService extends IntentService {
     }
 
     private Notification getNotification(TodoItem pTodoItem) {
+        Intent contentIntent = SnoozeActivity.getCallingIntent(this, pTodoItem);
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(this, pTodoItem.getId().hashCode(),
+                contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent deleteItemIntent = new Intent(this, TodoService.class);
+        deleteItemIntent.putExtra(EXTRA_TODO, pTodoItem);
+        deleteItemIntent.setAction(ACTION_DELETE_TODO);
+        PendingIntent deleteItemPendingIntent = PendingIntent.getService(this, pTodoItem.getId().hashCode(),
+                deleteItemIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder lBuilder = new NotificationCompat.Builder(this);
         lBuilder.setTicker(pTodoItem.getTitle())
                 .setContentTitle(pTodoItem.getTitle())
+                .setContentIntent(contentPendingIntent)
+                .setDeleteIntent(deleteItemPendingIntent)
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true);
