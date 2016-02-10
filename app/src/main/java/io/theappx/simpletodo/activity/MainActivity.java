@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
@@ -122,9 +122,9 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
-        //TODO Set number of columns according to available width
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
-                StaggeredGridLayoutManager.VERTICAL));
+//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
+//                StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mTodoAdapter = new TodoAdapter(this);
         mTodoAdapter.setOnItemClickListener(this);

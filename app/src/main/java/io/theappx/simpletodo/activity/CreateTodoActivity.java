@@ -38,6 +38,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.colorpicker.ColorPickerDialog;
+import io.theappx.simpletodo.colorpicker.ColorPickerSwatch;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.DateUtils;
@@ -45,7 +47,8 @@ import io.theappx.simpletodo.utils.FormatUtils;
 
 public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener {
+        TimePickerDialog.OnTimeSetListener,
+        ColorPickerSwatch.OnColorSelectedListener {
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
     private static final int ANIM_DURATION = 1000;
     private static final String STATE_TODO_INSTANCE = "io.theappx.todoInstance";
@@ -79,6 +82,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
 
+    private ColorPickerDialog colorPickerDialog;
+
     private Calendar mCalendar;
 
     public static Intent getCallingIntent(Context pContext, TodoItem pTodoItem) {
@@ -101,6 +106,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
         ButterKnife.bind(this);
 
+        int[] colorArray = getResources().getIntArray(R.array.color_array);
+        colorPickerDialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
+                colorArray, colorArray[0], 3, ColorPickerDialog.SIZE_SMALL);
+        colorPickerDialog.setOnColorSelectedListener(this);
         mCalendar = Calendar.getInstance();
 
         if (savedInstanceState == null) {
@@ -310,6 +319,10 @@ public class CreateTodoActivity extends AppCompatActivity implements
                             finish();
                         }
                         return true;
+
+                    case R.id.change_color:
+                        colorPickerDialog.show(getFragmentManager(), "CreateTodoActivity");
+                        return true;
                 }
                 return true;
             }
@@ -359,6 +372,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
             mCalendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
             setTodoTime();
         }
+    }
+
+    @Override
+    public void onColorSelected(int color) {
+
     }
 
     private void setTodoDate() {

@@ -4,5 +4,22 @@
     <color name="colorPrimaryDark">#d32f2f</color>
     <color name="colorAccent">#9e9e9e</color>
 
+    <color name="blue_grey">#607d8b</color>
+    <color name="green">#388e3c</color>
+    <color name="blue">#1976d2</color>
+    <color name="pink">#c2185b</color>
+    <color name="orange">#f57c00</color>
+    <color name="indigo">#303f9f</color>
+
+    <color name="white">#fff</color>
     <color name="transparent">#0000</color>
+
+    <array name="color_array">
+        <item>@color/blue_grey</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/pink</item>
+        <item>@color/orange</item>
+        <item>@color/indigo</item>
+    </array>
 </resources>

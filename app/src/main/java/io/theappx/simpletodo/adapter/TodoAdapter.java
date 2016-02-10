@@ -3,15 +3,18 @@ package io.theappx.simpletodo.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -41,9 +44,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         TextView titleTextView;
         @Bind(R.id.tv_description)
         TextView descriptionTextView;
-        @Bind(R.id.tv_timer)
-        TextView timerTextView;
-        @Bind(R.id.v_timer)
+        @Bind(R.id.date_textview)
+        TextView dateTextView;
+        @Bind(R.id.time_textview)
+        TextView timeTextView;
+        @Bind(R.id.timer_imageview)
+        ImageView timerImageView;
+        @Bind(R.id.timer_section_view)
         LinearLayout timerView;
 
         private TodoItem mTodoItem;
@@ -96,17 +103,25 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
         holder.titleTextView.setText(title);
 
-        if (lDescription != null) {
+        if (!TextUtils.isEmpty(lDescription)) {
             holder.descriptionTextView.setText(lDescription);
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
         if (lTodoItem.shouldBeReminded()) {
-            String lDateTime = FormatUtils.getCompactStringFromDate(lTodoItem.getDateInstance(),
-                    DateFormat.is24HourFormat(context));
-            holder.timerView.setVisibility(View.VISIBLE);
-            holder.timerTextView.setText(lDateTime);
+            holder.dateTextView.setVisibility(View.VISIBLE);
+            holder.timeTextView.setVisibility(View.VISIBLE);
+            holder.timerImageView.setVisibility(View.VISIBLE);
+
+            Date dateInstance = lTodoItem.getDateInstance();
+            holder.dateTextView.setText(FormatUtils.getCompatDateString(dateInstance));
+            holder.timeTextView.setText(DateFormat.is24HourFormat(context) ?
+                    FormatUtils.get24HourTimeStringFromDate(dateInstance) :
+                    FormatUtils.getTimeStringFromDate(dateInstance));
         } else {
-            holder.timerView.setVisibility(View.GONE);
+            holder.dateTextView.setVisibility(View.GONE);
+            holder.timeTextView.setVisibility(View.GONE);
+            holder.timerImageView.setVisibility(View.GONE);
+
         }
     }
 
