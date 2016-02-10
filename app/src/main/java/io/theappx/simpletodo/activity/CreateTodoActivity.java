@@ -118,6 +118,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
             if (mTodoItem == null) {
                 mTodoItem = new TodoItem(UUID.randomUUID().toString());
+                mTodoItem.setColor(colorArray[0]);
                 isNewTodo = true;
             } else {
                 if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
@@ -376,7 +377,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     @Override
     public void onColorSelected(int color) {
-
+        mTodoItem.setColor(color);
     }
 
     private void setTodoDate() {

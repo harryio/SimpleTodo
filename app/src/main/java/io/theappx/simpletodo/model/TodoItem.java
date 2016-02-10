@@ -22,6 +22,8 @@ public class TodoItem implements Parcelable {
     long time;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_REMIND)
     boolean shouldRemind;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_COLOR)
+    int color;
 
     public TodoItem() {
     }
@@ -84,9 +86,18 @@ public class TodoItem implements Parcelable {
         shouldRemind = pShouldRemind;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     public boolean isChanged(TodoItem pCloneTodoItem) {
         return (!(this.mTitle.equals(pCloneTodoItem.getTitle()))
                         || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
+                        || !(this.color == pCloneTodoItem.getColor())
                         || isRemindStatusChanged(pCloneTodoItem)
                         || isTimeChanged(pCloneTodoItem));
     }
@@ -121,6 +132,7 @@ public class TodoItem implements Parcelable {
         dest.writeString(this.mTitle);
         dest.writeString(this.mDescription);
         dest.writeLong(this.time);
+        dest.writeInt(this.color);
         dest.writeByte(shouldRemind ? (byte) 1 : (byte) 0);
     }
 
@@ -129,6 +141,7 @@ public class TodoItem implements Parcelable {
         this.mTitle = in.readString();
         this.mDescription = in.readString();
         this.time = in.readLong();
+        this.color = in.readInt();
         this.shouldRemind = in.readByte() != 0;
     }
 

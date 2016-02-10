@@ -10,4 +10,5 @@ public class TodoContract implements BaseColumns {
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_TIME_MILLIS = "time";
     public static final String COLUMN_REMIND = "remind";
+    public static final String COLUMN_COLOR = "color";
 }

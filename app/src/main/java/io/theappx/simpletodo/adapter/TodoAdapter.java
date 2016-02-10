@@ -107,6 +107,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
             holder.descriptionTextView.setText(lDescription);
         } else holder.descriptionTextView.setVisibility(View.GONE);
 
+        holder.timerView.setBackgroundColor(lTodoItem.getColor());
         if (lTodoItem.shouldBeReminded()) {
             holder.dateTextView.setVisibility(View.VISIBLE);
             holder.timeTextView.setVisibility(View.VISIBLE);

@@ -122,8 +122,6 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
-//                StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mTodoAdapter = new TodoAdapter(this);
