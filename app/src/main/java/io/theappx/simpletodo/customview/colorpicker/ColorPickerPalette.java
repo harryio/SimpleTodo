@@ -1,4 +1,4 @@
-package io.theappx.simpletodo.colorpicker;
+package io.theappx.simpletodo.customview.colorpicker;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,10 +10,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import io.theappx.simpletodo.R;
-import io.theappx.simpletodo.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
 public class ColorPickerPalette extends TableLayout {
-    public OnColorSelectedListener mOnColorSelectedListener;
+    public ColorPickerSwatch.OnColorSelectedListener mOnColorSelectedListener;
 
     private String mDescription;
     private String mDescriptionSelected;
@@ -34,7 +33,7 @@ public class ColorPickerPalette extends TableLayout {
      * Initialize the size, columns, and listener.  Size should be a pre-defined size (SIZE_LARGE
      * or SIZE_SMALL) from ColorPickerDialogFragment.
      */
-    public void init(int size, int columns, OnColorSelectedListener listener) {
+    public void init(int size, int columns, ColorPickerSwatch.OnColorSelectedListener listener) {
         mNumColumns = columns;
         Resources res = getResources();
         if (size == ColorPickerDialog.SIZE_LARGE) {

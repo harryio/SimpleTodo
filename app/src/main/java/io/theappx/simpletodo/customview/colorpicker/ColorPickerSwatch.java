@@ -1,4 +1,4 @@
-package io.theappx.simpletodo.colorpicker;
+package io.theappx.simpletodo.customview.colorpicker;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -27,7 +27,7 @@ public class ColorPickerSwatch extends FrameLayout implements View.OnClickListen
         /**
          * Called when a specific color square has been selected.
          */
-        public void onColorSelected(int color);
+        void onColorSelected(int color);
     }
 
     public ColorPickerSwatch(Context context, int color, boolean checked,

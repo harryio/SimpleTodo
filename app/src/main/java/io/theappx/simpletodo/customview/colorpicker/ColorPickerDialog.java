@@ -1,4 +1,4 @@
-package io.theappx.simpletodo.colorpicker;
+package io.theappx.simpletodo.customview.colorpicker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,9 +10,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import io.theappx.simpletodo.R;
-import io.theappx.simpletodo.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
-public class ColorPickerDialog extends DialogFragment implements OnColorSelectedListener {
+public class ColorPickerDialog extends DialogFragment implements ColorPickerSwatch.OnColorSelectedListener {
     public static final int SIZE_LARGE = 1;
     public static final int SIZE_SMALL = 2;
 
@@ -35,7 +34,7 @@ public class ColorPickerDialog extends DialogFragment implements OnColorSelected
     private ColorPickerPalette mPalette;
     private ProgressBar mProgress;
 
-    protected OnColorSelectedListener mListener;
+    protected ColorPickerSwatch.OnColorSelectedListener mListener;
 
     public ColorPickerDialog() {
         // Empty constructor required for dialog fragments.
@@ -61,7 +60,7 @@ public class ColorPickerDialog extends DialogFragment implements OnColorSelected
         setArguments(bundle);
     }
 
-    public void setOnColorSelectedListener(OnColorSelectedListener listener) {
+    public void setOnColorSelectedListener(ColorPickerSwatch.OnColorSelectedListener listener) {
         mListener = listener;
     }
 
@@ -110,9 +109,9 @@ public class ColorPickerDialog extends DialogFragment implements OnColorSelected
             mListener.onColorSelected(color);
         }
 
-        if (getTargetFragment() instanceof OnColorSelectedListener) {
-            final OnColorSelectedListener listener =
-                    (OnColorSelectedListener) getTargetFragment();
+        if (getTargetFragment() instanceof ColorPickerSwatch.OnColorSelectedListener) {
+            final ColorPickerSwatch.OnColorSelectedListener listener =
+                    (ColorPickerSwatch.OnColorSelectedListener) getTargetFragment();
             listener.onColorSelected(color);
         }
 

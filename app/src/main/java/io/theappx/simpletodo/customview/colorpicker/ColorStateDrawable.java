@@ -1,4 +1,4 @@
-package io.theappx.simpletodo.colorpicker;
+package io.theappx.simpletodo.customview.colorpicker;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;

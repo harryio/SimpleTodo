@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Data">
+        <attr name="dataTitle" format="string" />
+        <attr name="dataDefaultTitle" format="string" />
+        <attr name="dataIcon" format="integer" />
+    </declare-styleable>
+</resources>
