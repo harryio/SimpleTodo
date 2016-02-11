@@ -1,111 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
+    android:id="@+id/item_root_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:foreground="?selectableItemBackground"
+    android:layout_height="60dp"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginBottom="4dp">
+    android:background="@color/white">
 
-    <!--<android.support.v7.widget.CardView-->
-        <!--android:id="@+id/item_root_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_margin="4dp"-->
-        <!--android:foreground="?selectableItemBackground"-->
-        <!--card_view:cardElevation="0dp"-->
-        <!-->-->
+    <View
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:background="@color/pink"/>
 
-        <!-- -->
-    <!--</android.support.v7.widget.CardView>-->
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:checked="false"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="?listPreferredItemHeight"
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:background="@color/white">
+        android:id="@+id/date_time_view"
+        android:layout_width="56dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/timer_section_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.20"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="4dp"
-            tools:background="@color/green">
+        <ImageView
+            android:id="@+id/timer_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_alarm_idle"
+            android:layout_gravity="center_horizontal"
+            tools:ignore="contentDescription"/>
 
-            <ImageView
-                android:id="@+id/timer_imageview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_alarm_idle"
-                tools:ignore="contentDescription"/>
+        <TextView
+            android:id="@+id/date_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            tools:text="Jan 20"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="italic"
+            android:singleLine="true"
+            tools:ignore="SpUsage"/>
 
-            <TextView
-                android:id="@+id/date_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:textSize="14dp"
-                android:textColor="@color/white"
-                tools:text="Jan 20"
-                android:fontFamily="sans-serif-condensed"
-                android:textStyle="italic"
-                android:singleLine="true"
-                tools:ignore="SpUsage"/>
-
-            <TextView
-                android:id="@+id/time_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="12dp"
-                android:fontFamily="sans-serif-condensed"
-                android:singleLine="true"
-                tools:text="10:30 am"
-                tools:ignore="SpUsage"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="0.80"
-            android:gravity="center_vertical"
-            android:padding="4dp"
-            >
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                tools:text="Bring 2kg of milk"/>
-
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                tools:text="For making cake"/>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/time_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="12dp"
+            android:fontFamily="sans-serif-condensed"
+            android:singleLine="true"
+            tools:text="10:30 am"
+            tools:ignore="SpUsage"/>
 
     </LinearLayout>
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/item_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="72dp"
+        android:layout_toStartOf="@id/date_time_view"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            tools:text="Buy 2Kg milk"
+            />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="For making cake"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
