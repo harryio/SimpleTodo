@@ -1,7 +1,6 @@
 package io.theappx.simpletodo.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -22,7 +21,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.helper.ItemTouchHelperAdapter;
-import io.theappx.simpletodo.helper.ItemTouchHelperViewHolder;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.FormatUtils;
 
@@ -39,7 +37,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
-            implements ItemTouchHelperViewHolder {
+            {
         @Bind(R.id.tv_title)
         TextView titleTextView;
         @Bind(R.id.tv_description)
@@ -73,16 +71,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
         public void setTodoItem(TodoItem pTodoItem) {
             mTodoItem = pTodoItem;
-        }
-
-        @Override
-        public void onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
-        }
-
-        @Override
-        public void onItemClear() {
-            itemView.setBackgroundColor(0);
         }
     }
 

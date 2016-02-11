@@ -61,7 +61,7 @@ public class DataLayout extends RelativeLayout {
         imageView.setImageDrawable(drawable);
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public void setDataValue(String defaultValue) {
         defaultValueTextView.setText(defaultValue);
     }
 }

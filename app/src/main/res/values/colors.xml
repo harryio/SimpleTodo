@@ -12,6 +12,7 @@
     <color name="indigo">#303f9f</color>
 
     <color name="white">#fff</color>
+    <color name="grey_light">#eceff1</color>
     <color name="transparent">#0000</color>
 
     <array name="color_array">

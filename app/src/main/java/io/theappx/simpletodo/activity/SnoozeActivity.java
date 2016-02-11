@@ -42,7 +42,7 @@ public class SnoozeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_snooze);
         ButterKnife.bind(this);
 
-        dataLayout.setDefaultValue("10 minutes");
+        dataLayout.setDataValue("10 minutes");
 
         todoItem = getIntent().getParcelableExtra(ARG_TODO_ITEM);
         titleTextView.setText(todoItem.getTitle());
@@ -72,13 +72,14 @@ public class SnoozeActivity extends AppCompatActivity {
 
     private Dialog getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = {"10 minutes", "30 minutes", "1 hour"};
+        final String[] items = {"10 minutes", "30 minutes", "1 hour"};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(todoItem.getTime());
 
+                dataLayout.setDataValue(items[which]);
                 switch (which) {
                     case 0:
                         calendar.add(Calendar.MINUTE, 10);
@@ -91,6 +92,7 @@ public class SnoozeActivity extends AppCompatActivity {
                     case 2:
                         calendar.add(Calendar.HOUR, 1);
                         break;
+
                 }
 
                 SnoozeActivity.this.calendar = calendar;

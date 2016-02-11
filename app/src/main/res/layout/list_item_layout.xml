@@ -1,107 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:foreground="?selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:layout_marginBottom="4dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/item_root_view"
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:id="@+id/item_root_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_margin="4dp"-->
+        <!--android:foreground="?selectableItemBackground"-->
+        <!--card_view:cardElevation="0dp"-->
+        <!-->-->
+
+        <!-- -->
+    <!--</android.support.v7.widget.CardView>-->
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        card_view:cardElevation="@dimen/card_shadow"
-        >
+        android:layout_height="?listPreferredItemHeight"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:background="@color/white">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/timer_section_view"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:minHeight="?listPreferredItemHeight"
-            android:baselineAligned="false">
+            android:layout_weight="0.20"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="4dp"
+            tools:background="@color/green">
 
-            <LinearLayout
-                android:id="@+id/timer_section_view"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.20"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="4dp"
-                tools:background="@color/green">
+            <ImageView
+                android:id="@+id/timer_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_alarm_idle"
+                tools:ignore="contentDescription"/>
 
-                <ImageView
-                    android:id="@+id/timer_imageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_alarm_idle"
-                    tools:ignore="contentDescription"/>
+            <TextView
+                android:id="@+id/date_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:textSize="14dp"
+                android:textColor="@color/white"
+                tools:text="Jan 20"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="italic"
+                android:singleLine="true"
+                tools:ignore="SpUsage"/>
 
-                <TextView
-                    android:id="@+id/date_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:textSize="16dp"
-                    android:textColor="@color/white"
-                    tools:text="Jan 20"
-                    android:fontFamily="sans-serif-condensed"
-                    android:textStyle="italic"
-                    android:singleLine="true"
-                    tools:ignore="SpUsage"/>
-
-                <TextView
-                    android:id="@+id/time_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:textColor="@color/white"
-                    android:textSize="14dp"
-                    android:fontFamily="sans-serif-light"
-                    android:singleLine="true"
-                    tools:text="10:30 am"
-                    tools:ignore="SpUsage"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="0.80"
-                android:gravity="center_vertical"
-                android:padding="4dp"
-                >
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    tools:text="Bring 2kg of milk"/>
-
-                <TextView
-                    android:id="@+id/tv_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:layout_marginTop="4dp"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    tools:text="For making cake"/>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/time_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:fontFamily="sans-serif-condensed"
+                android:singleLine="true"
+                tools:text="10:30 am"
+                tools:ignore="SpUsage"/>
 
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="0.80"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            >
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                tools:text="Bring 2kg of milk"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                tools:text="For making cake"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

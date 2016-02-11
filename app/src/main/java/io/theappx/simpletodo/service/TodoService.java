@@ -53,7 +53,7 @@ public class TodoService extends IntentService {
 
     public static void startActionDeleteTodo(Context context, TodoItem todoItem) {
         Intent intent = new Intent(context, TodoService.class);
-        intent.setAction(ACTION_DELETE_ALARM);
+        intent.setAction(ACTION_DELETE_TODO);
         intent.putExtra(EXTRA_TODO, todoItem);
         context.startService(intent);
     }
@@ -67,8 +67,8 @@ public class TodoService extends IntentService {
 
     public static void startActionDeleteAlarm(Context pContext, String todoId) {
         Intent intent = new Intent(pContext, TodoService.class);
-        intent.setAction(ACTION_DELETE_TODO);
-        intent.putExtra(EXTRA_TODO, todoId);
+        intent.setAction(ACTION_DELETE_ALARM);
+        intent.putExtra(EXTRA_TODO_ID, todoId);
         pContext.startService(intent);
     }
 
