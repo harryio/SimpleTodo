@@ -36,11 +36,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         this.context = context;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder
-            {
-        @Bind(R.id.tv_title)
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.title)
         TextView titleTextView;
-        @Bind(R.id.tv_description)
+        @Bind(R.id.description)
         TextView descriptionTextView;
         @Bind(R.id.date_textview)
         TextView dateTextView;

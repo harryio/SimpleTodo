@@ -29,24 +29,24 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="4dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="4dp">
 
         <ImageView
-            android:id="@+id/timer_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_alarm_idle"
+            android:src="@drawable/ic_alarm"
             android:layout_gravity="center_horizontal"
             tools:ignore="contentDescription"/>
 
         <TextView
-            android:id="@+id/date_textview"
+            android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:textSize="14dp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorPrimary"
             tools:text="Jan 20"
             android:fontFamily="sans-serif-condensed"
             android:textStyle="italic"
@@ -54,11 +54,11 @@
             tools:ignore="SpUsage"/>
 
         <TextView
-            android:id="@+id/time_textview"
+            android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textColor="@color/black"
+            android:textColor="@color/colorPrimary"
             android:textSize="12dp"
             android:fontFamily="sans-serif-condensed"
             android:singleLine="true"
