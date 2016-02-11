@@ -120,7 +120,7 @@ public class TodoService extends IntentService {
                 .prepare()
                 .executeAsBlocking();
 
-        if (todoItem.shouldBeReminded())
+        if (todoItem.isRemind())
             handleActionDeleteAlarm(todoItem.getId());
     }
 
@@ -135,7 +135,7 @@ public class TodoService extends IntentService {
         int length = todoItems.size();
         for (int i = 0; i < length; ++i) {
             TodoItem todoItem = todoItems.get(i);
-            if (todoItem.shouldBeReminded()) {
+            if (todoItem.isRemind()) {
                 handleActionDeleteAlarm(todoItem.getId());
             }
         }

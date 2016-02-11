@@ -5,8 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.CheckBox;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.databinding.ListItemLayoutBinding;
 import io.theappx.simpletodo.helper.ItemTouchHelperAdapter;
 import io.theappx.simpletodo.model.TodoItem;
 
@@ -32,19 +32,27 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.title)
-        TextView titleTextView;
-        @Bind(R.id.description)
-        TextView descriptionTextView;
-        @Bind(R.id.date)
-        TextView dateTextView;
-        @Bind(R.id.time)
-        TextView timeTextView;
-        @Bind(R.id.date_time_view)
-        LinearLayout dateTimeView;
+        @Bind(R.id.checkbox)
+        CheckBox checkBox;
+
+        ListItemLayoutBinding listItemLayoutBinding;
 
         private TodoItem mTodoItem;
         private OnItemClickListener mOnItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            mOnItemClickListener = pOnItemClickListener;
+            listItemLayoutBinding = ListItemLayoutBinding.bind(itemView);
+
+        }
+
+        public void setTodoItem(TodoItem pTodoItem) {
+            mTodoItem = pTodoItem;
+            listItemLayoutBinding.setTodoItem(pTodoItem);
+        }
 
         @OnClick(R.id.item_root_view)
         public void onItemClick() {
@@ -52,17 +60,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
                 throw new NullPointerException("OnItemClickListener not set");
 
             mOnItemClickListener.onListItemClick(getAdapterPosition(), mTodoItem);
-        }
-
-        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-            mOnItemClickListener = pOnItemClickListener;
-        }
-
-        public void setTodoItem(TodoItem pTodoItem) {
-            mTodoItem = pTodoItem;
         }
     }
 

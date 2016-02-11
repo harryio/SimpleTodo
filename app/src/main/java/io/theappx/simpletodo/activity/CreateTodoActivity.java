@@ -123,7 +123,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 mCalendar.set(Calendar.MINUTE, mCalendar.get(Calendar.MINUTE) + 2);
                 isNewTodo = true;
             } else {
-                if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
+                if (mTodoItem.isRemind()) mCalendar.setTime(mTodoItem.getDateInstance());
                 fillTodoDataInEditText();
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
@@ -176,7 +176,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         isNewTodo = savedInstanceState.getBoolean(STATE_NEW_INSTANCE);
 
         if (!isNewTodo) {
-            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
+            if (mTodoItem.isRemind()) mCalendar.setTime(mTodoItem.getDateInstance());
             fillTodoDataInEditText();
         }
 
@@ -224,8 +224,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpSwitchCompat() {
-        remindSwitch.setChecked(mTodoItem.shouldBeReminded());
-        if (mTodoItem.shouldBeReminded()) {
+        remindSwitch.setChecked(mTodoItem.isRemind());
+        if (mTodoItem.isRemind()) {
             remindView.setVisibility(View.VISIBLE);
         } else {
             remindView.setVisibility(View.GONE);
@@ -234,7 +234,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         remindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mTodoItem.setShouldRemind(isChecked);
+                mTodoItem.setReminderStatus(isChecked);
                 hideSoftKeyboardFromView(titleEditText);
                 hideSoftKeyboardFromView(descriptionEditText);
 
@@ -396,7 +396,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         if (isNewTodo) {
             if (!TextUtils.isEmpty(mTodoItem.getTitle())) {
                 storeItemToDatabase();
-                if (mTodoItem.shouldBeReminded()) {
+                if (mTodoItem.isRemind()) {
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
 
@@ -422,13 +422,13 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
 
         if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
-            if (mTodoItem.shouldBeReminded()) {
+            if (mTodoItem.isRemind()) {
                 TodoService.startActionCreateAlarm(this, mTodoItem);
             } else {
                 TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
             }
         } else {
-            if (mTodoItem.shouldBeReminded()) {
+            if (mTodoItem.isRemind()) {
                 if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
