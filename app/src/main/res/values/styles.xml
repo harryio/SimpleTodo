@@ -31,4 +31,10 @@
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">#48dddddd</item>
     </style>
+
+    <style name="CustomCheckbox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/grey_dark</item>
+        <item name="colorControlActivated">@color/grey_dark</item>
+    </style>
+
 </resources>
