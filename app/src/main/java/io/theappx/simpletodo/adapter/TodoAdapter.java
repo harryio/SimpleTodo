@@ -2,18 +2,14 @@ package io.theappx.simpletodo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +18,6 @@ import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.helper.ItemTouchHelperAdapter;
 import io.theappx.simpletodo.model.TodoItem;
-import io.theappx.simpletodo.utils.FormatUtils;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
@@ -41,14 +36,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         TextView titleTextView;
         @Bind(R.id.description)
         TextView descriptionTextView;
-        @Bind(R.id.date_textview)
+        @Bind(R.id.date)
         TextView dateTextView;
-        @Bind(R.id.time_textview)
+        @Bind(R.id.time)
         TextView timeTextView;
-        @Bind(R.id.timer_imageview)
-        ImageView timerImageView;
-        @Bind(R.id.timer_section_view)
-        LinearLayout timerView;
+        @Bind(R.id.date_time_view)
+        LinearLayout dateTimeView;
 
         private TodoItem mTodoItem;
         private OnItemClickListener mOnItemClickListener;
@@ -84,33 +77,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         TodoItem lTodoItem = mTodoItems.get(position);
 
         holder.setTodoItem(lTodoItem);
-
-        String title = lTodoItem.getTitle();
-        String lDescription = lTodoItem.getDescription();
-
-        holder.titleTextView.setText(title);
-
-        if (!TextUtils.isEmpty(lDescription)) {
-            holder.descriptionTextView.setText(lDescription);
-        } else holder.descriptionTextView.setVisibility(View.GONE);
-
-        holder.timerView.setBackgroundColor(lTodoItem.getColor());
-        if (lTodoItem.shouldBeReminded()) {
-            holder.dateTextView.setVisibility(View.VISIBLE);
-            holder.timeTextView.setVisibility(View.VISIBLE);
-            holder.timerImageView.setVisibility(View.VISIBLE);
-
-            Date dateInstance = lTodoItem.getDateInstance();
-            holder.dateTextView.setText(FormatUtils.getCompatDateString(dateInstance));
-            holder.timeTextView.setText(DateFormat.is24HourFormat(context) ?
-                    FormatUtils.get24HourTimeStringFromDate(dateInstance) :
-                    FormatUtils.getTimeStringFromDate(dateInstance));
-        } else {
-            holder.dateTextView.setVisibility(View.GONE);
-            holder.timeTextView.setVisibility(View.GONE);
-            holder.timerImageView.setVisibility(View.GONE);
-
-        }
     }
 
     @Override
