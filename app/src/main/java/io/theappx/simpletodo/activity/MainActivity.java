@@ -38,6 +38,7 @@ import io.theappx.simpletodo.utils.StorIOProvider;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 public class MainActivity extends AppCompatActivity
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         doneStatusObservable = PublishSubject.create();
         doneStatusSubscription = doneStatusObservable
                 .debounce(1500, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<TodoItem>() {
                     @Override
                     public void onCompleted() {
@@ -94,6 +96,13 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onNext(TodoItem todoItem) {
+                        if (todoItem.isRemind()) {
+                            if (todoItem.isDone()) {
+                                TodoService.startActionDeleteAlarm(MainActivity.this, todoItem.getId());
+                            } else {
+                                TodoService.startActionCreateAlarm(MainActivity.this, todoItem);
+                            }
+                        }
                         TodoService.startActionSaveTodo(MainActivity.this, todoItem);
                     }
                 });

@@ -407,6 +407,22 @@ public class CreateTodoActivity extends AppCompatActivity implements
             return;
         }
 
+        if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
+            if (mTodoItem.isRemind()) {
+                TodoService.startActionCreateAlarm(this, mTodoItem);
+                mTodoItem.setDone(false);
+            } else {
+                TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
+            }
+        } else {
+            if (mTodoItem.isRemind()) {
+                if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
+                    mTodoItem.setDone(false);
+                }
+            }
+        }
+
         if (mTodoItem.isChanged(mCloneTodoItem)) {
             if (TextUtils.isEmpty(titleEditText.getText())) {
                 mTodoItem.setTitle(mCloneTodoItem.getTitle());
@@ -421,19 +437,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
             setResult(RESULT_OK, returnIntent);
         }
 
-        if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
-            if (mTodoItem.isRemind()) {
-                TodoService.startActionCreateAlarm(this, mTodoItem);
-            } else {
-                TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
-            }
-        } else {
-            if (mTodoItem.isRemind()) {
-                if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                    TodoService.startActionCreateAlarm(this, mTodoItem);
-                }
-            }
-        }
     }
 
     private void storeItemToDatabase() {

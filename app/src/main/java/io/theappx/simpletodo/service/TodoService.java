@@ -94,7 +94,7 @@ public class TodoService extends IntentService {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleCreateAlarm(lTodoItem);
             } else if (ACTION_DELETE_ALARM.equals(action)) {
-                final String todoItemId = intent.getParcelableExtra(EXTRA_TODO_ID);
+                final String todoItemId = intent.getStringExtra(EXTRA_TODO_ID);
                 handleActionDeleteAlarm(todoItemId);
             } else if (ACTION_DELETE_ALL.equals(action)) {
                 final List<TodoItem> todoItems = intent.getParcelableArrayListExtra(EXTRA_TODO_LIST);

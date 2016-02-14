@@ -87,8 +87,8 @@ public class TodoItem extends BaseObservable implements Parcelable {
         return remind;
     }
 
-    public void setReminderStatus(boolean pShouldRemind) {
-        remind = pShouldRemind;
+    public void setReminderStatus(boolean shouldRemind) {
+        remind = shouldRemind;
     }
 
     public int getColor() {
@@ -148,8 +148,8 @@ public class TodoItem extends BaseObservable implements Parcelable {
         dest.writeString(this.description);
         dest.writeLong(this.time);
         dest.writeInt(this.color);
-        dest.writeByte(remind ? (byte) 1 : (byte) 0);
-        dest.writeByte(done ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.remind ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.done ? (byte) 1 : (byte) 0);
     }
 
     protected TodoItem(Parcel in) {
