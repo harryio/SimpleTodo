@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.theappx.simpletodo.R;
@@ -153,7 +154,10 @@ public class TodoService extends IntentService {
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
-        scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        Date alarmDate = new Date(pTodoItem.getTime());
+        if (alarmDate.after(new Date())) {
+            scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        }
     }
 
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
