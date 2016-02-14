@@ -49,7 +49,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         TimePickerDialog.OnTimeSetListener,
         ColorPickerSwatch.OnColorSelectedListener {
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
-    private static final int ANIM_DURATION = 1000;
+    private static final int ANIM_DURATION = 500;
     private static final String STATE_TODO_INSTANCE = "io.theappx.todoInstance";
     private static final String STATE_TODO_CLONE_INSTANCE = "io.theappx.todoCloneInstance";
     private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
