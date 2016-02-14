@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="Data">
         <attr name="dataTitle" format="string" />
-        <attr name="dataDefaultTitle" format="string" />
+        <attr name="dataDefaultValue" format="string" />
         <attr name="dataIcon" format="integer" />
     </declare-styleable>
 </resources>

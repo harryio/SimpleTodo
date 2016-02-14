@@ -49,7 +49,7 @@ public class DataLayout extends RelativeLayout {
                 .obtainStyledAttributes(attrs, R.styleable.Data, 0, 0);
         try {
             dataTitle = typedArray.getString(R.styleable.Data_dataTitle);
-            dataDefaultValue = typedArray.getString(R.styleable.Data_dataDefaultTitle);
+            dataDefaultValue = typedArray.getString(R.styleable.Data_dataDefaultValue);
 
             drawable = typedArray.getDrawable(R.styleable.Data_dataIcon);
         } finally {

@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/data_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_centerVertical="true"
         tools:src="@drawable/ic_snooze"
         />
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
+            android:fontFamily="sans-serif"
             tools:text="Snooze"
             />
 
@@ -35,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
             android:singleLine="true"
             tools:text="10 minutes"/>
 

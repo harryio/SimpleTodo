@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,6 +36,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.customview.DataLayout;
 import io.theappx.simpletodo.customview.colorpicker.ColorPickerDialog;
 import io.theappx.simpletodo.customview.colorpicker.ColorPickerSwatch;
 import io.theappx.simpletodo.model.TodoItem;
@@ -54,6 +53,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private static final String STATE_TODO_INSTANCE = "io.theappx.todoInstance";
     private static final String STATE_TODO_CLONE_INSTANCE = "io.theappx.todoCloneInstance";
     private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
+    private static final String STATE_REMIND = "io.theappx.remind";
 
     public static final String SAVE_ITEM = "io.theappx.saveItem";
     public static final String IS_ITEM_DELETED = "io.theappx.isItemDeleted";
@@ -62,22 +62,22 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.et_title)
+    @Bind(R.id.title)
     EditText titleEditText;
-    @Bind(R.id.et_description)
+    @Bind(R.id.description)
     EditText descriptionEditText;
-    @Bind(R.id.switch_remind)
-    SwitchCompat remindSwitch;
-    @Bind(R.id.et_date)
-    EditText dateEditText;
-    @Bind(R.id.et_time)
-    EditText timeEditText;
-    @Bind(R.id.remind_view)
-    LinearLayout remindView;
+    @Bind(R.id.dateTimeView)
+    LinearLayout dateTimeView;
+    @Bind(R.id.remindView)
+    DataLayout remindView;
+    @Bind(R.id.dateView)
+    DataLayout dateView;
+    @Bind(R.id.timeView)
+    DataLayout timeView;
 
     private TodoItem mTodoItem, mCloneTodoItem;
 
-    private boolean isNewTodo;
+    private boolean isNewTodo, reminderOn;
 
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
@@ -127,6 +127,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 fillTodoDataInEditText();
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
+                reminderOn = mTodoItem.shouldBeReminded();
             }
 
             setUp();
@@ -137,7 +138,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         setUpTitleAndDescpEditText();
         setUpDateAndTimeEditText();
         setUpToolbar();
-        setUpSwitchCompat();
+        setUpDateTimeView();
 
         mDatePickerDialog = DatePickerDialog.newInstance(
                 this,
@@ -165,6 +166,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         outState.putParcelable(STATE_TODO_INSTANCE, mTodoItem);
         outState.putParcelable(STATE_TODO_CLONE_INSTANCE, mCloneTodoItem);
         outState.putBoolean(STATE_NEW_INSTANCE, isNewTodo);
+        outState.putBoolean(STATE_REMIND, reminderOn);
     }
 
     @Override
@@ -174,6 +176,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         mTodoItem = savedInstanceState.getParcelable(STATE_TODO_INSTANCE);
         mCloneTodoItem = savedInstanceState.getParcelable(STATE_TODO_CLONE_INSTANCE);
         isNewTodo = savedInstanceState.getBoolean(STATE_NEW_INSTANCE);
+        reminderOn = savedInstanceState.getBoolean(STATE_REMIND);
 
         if (!isNewTodo) {
             if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
@@ -223,22 +226,19 @@ public class CreateTodoActivity extends AppCompatActivity implements
         });
     }
 
-    private void setUpSwitchCompat() {
-        remindSwitch.setChecked(mTodoItem.shouldBeReminded());
-        if (mTodoItem.shouldBeReminded()) {
-            remindView.setVisibility(View.VISIBLE);
-        } else {
-            remindView.setVisibility(View.GONE);
-        }
-
-        remindSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void setUpDateTimeView() {
+        remindView.setDataValue(reminderOn ? "ON" : "OFF");
+        dateTimeView.setVisibility(mTodoItem.shouldBeReminded() ? View.VISIBLE : View.GONE);
+        remindView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mTodoItem.setShouldRemind(isChecked);
+            public void onClick(View v) {
+                reminderOn = !reminderOn;
+                mTodoItem.setShouldRemind(reminderOn);
+                remindView.setDataValue(reminderOn ? "ON" : "OFF");
                 hideSoftKeyboardFromView(titleEditText);
                 hideSoftKeyboardFromView(descriptionEditText);
 
-                if (isChecked) {
+                if (reminderOn) {
                     mTodoItem.setTime(mCalendar.getTimeInMillis());
 
                     setUpDateAndTimeEditText();
@@ -251,9 +251,9 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void animateOutRemindView() {
-        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(remindView, "alpha", 1f, 0f);
+        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(dateTimeView, "alpha", 1f, 0f);
         ObjectAnimator translateYAnim = ObjectAnimator.
-                ofFloat(remindView, "translationY", 0, remindView.getHeight());
+                ofFloat(dateTimeView, "translationY", 0, dateTimeView.getHeight());
         AnimatorSet lAnimatorSet = new AnimatorSet();
         lAnimatorSet.setDuration(ANIM_DURATION);
         lAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -261,16 +261,16 @@ public class CreateTodoActivity extends AppCompatActivity implements
         lAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                remindView.setVisibility(View.GONE);
+                dateTimeView.setVisibility(View.GONE);
             }
         });
         lAnimatorSet.start();
     }
 
     private void animateInRemindView() {
-        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(remindView, "alpha", 0f, 1f);
+        ObjectAnimator fadeInAnim = ObjectAnimator.ofFloat(dateTimeView, "alpha", 0f, 1f);
         ObjectAnimator translateYAnim = ObjectAnimator.
-                ofFloat(remindView, "translationY", remindView.getHeight(), 0);
+                ofFloat(dateTimeView, "translationY", dateTimeView.getHeight(), 0);
         AnimatorSet lAnimatorSet = new AnimatorSet();
         lAnimatorSet.setDuration(ANIM_DURATION);
         lAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -278,7 +278,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         lAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                remindView.setVisibility(View.VISIBLE);
+                dateTimeView.setVisibility(View.VISIBLE);
             }
         });
         lAnimatorSet.start();
@@ -290,13 +290,12 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpTimeEditText() {
-        timeEditText.setText(DateFormat.is24HourFormat(this) ?
-                FormatUtils.get24HourTimeStringFromDate(mCalendar.getTime()) :
-                FormatUtils.getTimeStringFromDate(mCalendar.getTime()));
+        java.text.DateFormat dateFormat = DateFormat.getTimeFormat(this);
+        timeView.setDataValue(dateFormat.format(mCalendar.getTime()));
     }
 
     private void setUpDateEditText() {
-        dateEditText.setText(DateUtils.isToday(mCalendar) ? "Today"
+        dateView.setDataValue(DateUtils.isToday(mCalendar) ? "Today"
                 : FormatUtils.getDayStringFromDate(mCalendar.getTime()));
     }
 
@@ -332,14 +331,21 @@ public class CreateTodoActivity extends AppCompatActivity implements
         });
     }
 
-    @OnClick(R.id.et_date)
+    @OnClick(R.id.dateView)
     public void selectDate() {
         mDatePickerDialog.show(getFragmentManager(), "Choose Date");
     }
 
-    @OnClick(R.id.et_time)
+    @OnClick(R.id.timeView)
     public void selectTime() {
         mTimePickerDialog.show(getFragmentManager(), "Choose Time");
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClick() {
+        onActivityExit();
+        hideSoftKeyboard();
+        finish();
     }
 
     @Override
@@ -438,14 +444,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private void storeItemToDatabase() {
         TodoService.startActionSaveTodo(this, mTodoItem);
-    }
-
-    @Override
-    public void onBackPressed() {
-        onActivityExit();
-        hideSoftKeyboard();
-
-        super.onBackPressed();
     }
 
     private void hideSoftKeyboard() {
