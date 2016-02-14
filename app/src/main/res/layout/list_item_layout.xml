@@ -1,111 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_root_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:foreground="?selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:layout_marginBottom="4dp">
+    >
 
-    <!--<android.support.v7.widget.CardView-->
-        <!--android:id="@+id/item_root_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_margin="4dp"-->
-        <!--android:foreground="?selectableItemBackground"-->
-        <!--card_view:cardElevation="0dp"-->
-        <!-->-->
+    <data>
 
-        <!-- -->
-    <!--</android.support.v7.widget.CardView>-->
+        <variable
+            name="todoItem"
+            type="io.theappx.simpletodo.model.TodoItem"/>
 
-    <LinearLayout
+        <import type="android.view.View"/>
+
+        <import type="android.text.TextUtils"/>
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/item_root_view"
         android:layout_width="match_parent"
-        android:layout_height="?listPreferredItemHeight"
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:background="@color/white">
+        android:layout_height="72dp"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true">
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="match_parent"
+            android:background="@{todoItem.color}"
+            tools:background="@color/pink"/>
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:checked="@{todoItem.done ? true : false}"
+            android:theme="@style/CustomCheckbox"/>
 
         <LinearLayout
-            android:id="@+id/timer_section_view"
-            android:layout_width="0dp"
+            android:id="@+id/date_time_view"
+            android:layout_width="56dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.20"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="4dp"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="4dp"
-            tools:background="@color/green">
+            android:visibility="@{todoItem.remind ? View.VISIBLE : View.INVISIBLE}"
+            >
 
             <ImageView
-                android:id="@+id/timer_imageview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_alarm_idle"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_alarm"
                 tools:ignore="contentDescription"/>
 
             <TextView
-                android:id="@+id/date_textview"
+                android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:textSize="14dp"
-                android:textColor="@color/white"
-                tools:text="Jan 20"
                 android:fontFamily="sans-serif-condensed"
-                android:textStyle="italic"
+                android:gravity="center_horizontal"
                 android:singleLine="true"
-                tools:ignore="SpUsage"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="14dp"
+                android:textStyle="italic"
+                app:itemDate="@{todoItem}"
+                tools:ignore="SpUsage"
+                tools:text="Jan 20"/>
 
             <TextView
-                android:id="@+id/time_textview"
+                android:id="@+id/time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="12dp"
                 android:fontFamily="sans-serif-condensed"
+                android:gravity="center_horizontal"
                 android:singleLine="true"
-                tools:text="10:30 am"
-                tools:ignore="SpUsage"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="12dp"
+                app:itemTime="@{todoItem}"
+                tools:ignore="SpUsage"
+                tools:text="10:30 am"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/item_view"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="0.80"
+            android:layout_marginStart="72dp"
+            android:layout_toStartOf="@id/date_time_view"
             android:gravity="center_vertical"
-            android:padding="4dp"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:text="@{todoItem.title}"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                tools:text="Buy 2Kg milk"
+                app:doneStatus="@{todoItem.done}"
+                />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-light"
                 android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                tools:text="Bring 2kg of milk"/>
-
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                tools:text="For making cake"/>
+                android:text="@{todoItem.description}"
+                android:textSize="14sp"
+                android:textColor="?android:textColorSecondary"
+                android:textStyle="normal"
+                android:visibility="@{TextUtils.isEmpty(todoItem.description) ? View.GONE : View.VISIBLE}"
+                tools:text="For making cake"
+                />
 
         </LinearLayout>
 
-    </LinearLayout>
-
-</FrameLayout>
+    </RelativeLayout>
+</layout>

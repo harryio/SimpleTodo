@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "TODO";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TodoContract.COLUMN_TIME_MILLIS + " INTEGER," +
                         TodoContract.COLUMN_REMIND + " INTEGER DEFAULT 0," +
                         TodoContract.COLUMN_COLOR + " INTEGER," +
+                        TodoContract.COLUMN_DONE + " INTEGER DEFAULT 0," +
                         "UNIQUE (" + TodoContract.COLUMN_ID + ") ON CONFLICT IGNORE);";
 
         db.execSQL(SQL_CREATE_TODO_TABLE);

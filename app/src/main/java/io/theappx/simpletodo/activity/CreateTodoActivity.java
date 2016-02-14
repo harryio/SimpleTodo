@@ -123,11 +123,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 mCalendar.set(Calendar.MINUTE, mCalendar.get(Calendar.MINUTE) + 2);
                 isNewTodo = true;
             } else {
-                if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
+                if (mTodoItem.isRemind()) mCalendar.setTime(mTodoItem.getDateInstance());
                 fillTodoDataInEditText();
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
-                reminderOn = mTodoItem.shouldBeReminded();
+                reminderOn = mTodoItem.isRemind();
             }
 
             setUp();
@@ -179,7 +179,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         reminderOn = savedInstanceState.getBoolean(STATE_REMIND);
 
         if (!isNewTodo) {
-            if (mTodoItem.shouldBeReminded()) mCalendar.setTime(mTodoItem.getDateInstance());
+            if (mTodoItem.isRemind()) mCalendar.setTime(mTodoItem.getDateInstance());
             fillTodoDataInEditText();
         }
 
@@ -189,7 +189,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private void setUpTitleAndDescpEditText() {
         titleEditText.requestFocus();
         showSoftKeyboard();
-        if (!TextUtils.isEmpty(mTodoItem.getTitle())) titleEditText.setSelection(mTodoItem.getTitle().length());
+        if (!TextUtils.isEmpty(mTodoItem.getTitle()))
+            titleEditText.setSelection(mTodoItem.getTitle().length());
 
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -228,13 +229,14 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
     private void setUpDateTimeView() {
         remindView.setDataValue(reminderOn ? "ON" : "OFF");
-        dateTimeView.setVisibility(mTodoItem.shouldBeReminded() ? View.VISIBLE : View.GONE);
+        dateTimeView.setVisibility(mTodoItem.isRemind() ? View.VISIBLE : View.GONE);
         remindView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reminderOn = !reminderOn;
-                mTodoItem.setShouldRemind(reminderOn);
+                mTodoItem.setReminderStatus(reminderOn);
                 remindView.setDataValue(reminderOn ? "ON" : "OFF");
+
                 hideSoftKeyboardFromView(titleEditText);
                 hideSoftKeyboardFromView(descriptionEditText);
 
@@ -402,7 +404,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         if (isNewTodo) {
             if (!TextUtils.isEmpty(mTodoItem.getTitle())) {
                 storeItemToDatabase();
-                if (mTodoItem.shouldBeReminded()) {
+                if (mTodoItem.isRemind()) {
                     TodoService.startActionCreateAlarm(this, mTodoItem);
                 }
 
@@ -411,6 +413,22 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 setResult(RESULT_OK, returnIntent);
             }
             return;
+        }
+
+        if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
+            if (mTodoItem.isRemind()) {
+                TodoService.startActionCreateAlarm(this, mTodoItem);
+                mTodoItem.setDone(false);
+            } else {
+                TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
+            }
+        } else {
+            if (mTodoItem.isRemind()) {
+                if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
+                    TodoService.startActionCreateAlarm(this, mTodoItem);
+                    mTodoItem.setDone(false);
+                }
+            }
         }
 
         if (mTodoItem.isChanged(mCloneTodoItem)) {
@@ -427,19 +445,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
             setResult(RESULT_OK, returnIntent);
         }
 
-        if (mTodoItem.isRemindStatusChanged(mCloneTodoItem)) {
-            if (mTodoItem.shouldBeReminded()) {
-                TodoService.startActionCreateAlarm(this, mTodoItem);
-            } else {
-                TodoService.startActionDeleteAlarm(this, mTodoItem.getId());
-            }
-        } else {
-            if (mTodoItem.shouldBeReminded()) {
-                if (mTodoItem.isTimeChanged(mCloneTodoItem)) {
-                    TodoService.startActionCreateAlarm(this, mTodoItem);
-                }
-            }
-        }
     }
 
     private void storeItemToDatabase() {

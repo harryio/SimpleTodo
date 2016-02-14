@@ -2,27 +2,23 @@ package io.theappx.simpletodo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
+import io.theappx.simpletodo.databinding.ListItemLayoutBinding;
 import io.theappx.simpletodo.helper.ItemTouchHelperAdapter;
 import io.theappx.simpletodo.model.TodoItem;
-import io.theappx.simpletodo.utils.FormatUtils;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
@@ -36,23 +32,29 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         this.context = context;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder
-            {
-        @Bind(R.id.tv_title)
-        TextView titleTextView;
-        @Bind(R.id.tv_description)
-        TextView descriptionTextView;
-        @Bind(R.id.date_textview)
-        TextView dateTextView;
-        @Bind(R.id.time_textview)
-        TextView timeTextView;
-        @Bind(R.id.timer_imageview)
-        ImageView timerImageView;
-        @Bind(R.id.timer_section_view)
-        LinearLayout timerView;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.checkbox)
+        CheckBox checkBox;
+
+        ListItemLayoutBinding listItemLayoutBinding;
 
         private TodoItem mTodoItem;
         private OnItemClickListener mOnItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            mOnItemClickListener = pOnItemClickListener;
+            listItemLayoutBinding = ListItemLayoutBinding.bind(itemView);
+
+            setUpCheckBox();
+        }
+
+        public void setTodoItem(TodoItem pTodoItem) {
+            mTodoItem = pTodoItem;
+            listItemLayoutBinding.setTodoItem(pTodoItem);
+        }
 
         @OnClick(R.id.item_root_view)
         public void onItemClick() {
@@ -62,15 +64,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
             mOnItemClickListener.onListItemClick(getAdapterPosition(), mTodoItem);
         }
 
-        public ViewHolder(View itemView, OnItemClickListener pOnItemClickListener) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-            mOnItemClickListener = pOnItemClickListener;
-        }
-
-        public void setTodoItem(TodoItem pTodoItem) {
-            mTodoItem = pTodoItem;
+        private void setUpCheckBox() {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mOnItemClickListener.onCheckChanged(isChecked, mTodoItem);
+                }
+            });
         }
     }
 
@@ -85,33 +85,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
         TodoItem lTodoItem = mTodoItems.get(position);
 
         holder.setTodoItem(lTodoItem);
-
-        String title = lTodoItem.getTitle();
-        String lDescription = lTodoItem.getDescription();
-
-        holder.titleTextView.setText(title);
-
-        if (!TextUtils.isEmpty(lDescription)) {
-            holder.descriptionTextView.setText(lDescription);
-        } else holder.descriptionTextView.setVisibility(View.GONE);
-
-        holder.timerView.setBackgroundColor(lTodoItem.getColor());
-        if (lTodoItem.shouldBeReminded()) {
-            holder.dateTextView.setVisibility(View.VISIBLE);
-            holder.timeTextView.setVisibility(View.VISIBLE);
-            holder.timerImageView.setVisibility(View.VISIBLE);
-
-            Date dateInstance = lTodoItem.getDateInstance();
-            holder.dateTextView.setText(FormatUtils.getCompatDateString(dateInstance));
-            holder.timeTextView.setText(DateFormat.is24HourFormat(context) ?
-                    FormatUtils.get24HourTimeStringFromDate(dateInstance) :
-                    FormatUtils.getTimeStringFromDate(dateInstance));
-        } else {
-            holder.dateTextView.setVisibility(View.GONE);
-            holder.timeTextView.setVisibility(View.GONE);
-            holder.timerImageView.setVisibility(View.GONE);
-
-        }
     }
 
     @Override
@@ -154,13 +127,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
     public interface OnItemClickListener {
         void onListItemClick(int position, TodoItem pTodoItem);
-
+        void onCheckChanged(boolean isChecked, TodoItem todoItem);
     }
+
     public interface OnItemDismissListener {
         void onItemDismissed(int position, TodoItem todoItem);
-
     }
-
     public void setOnItemClickListener(OnItemClickListener pOnItemClickListener) {
         mOnItemClickListener = pOnItemClickListener;
     }

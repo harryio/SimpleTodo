@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.theappx.simpletodo.R;
@@ -94,7 +95,7 @@ public class TodoService extends IntentService {
                 final TodoItem lTodoItem = intent.getParcelableExtra(EXTRA_TODO);
                 handleCreateAlarm(lTodoItem);
             } else if (ACTION_DELETE_ALARM.equals(action)) {
-                final String todoItemId = intent.getParcelableExtra(EXTRA_TODO_ID);
+                final String todoItemId = intent.getStringExtra(EXTRA_TODO_ID);
                 handleActionDeleteAlarm(todoItemId);
             } else if (ACTION_DELETE_ALL.equals(action)) {
                 final List<TodoItem> todoItems = intent.getParcelableArrayListExtra(EXTRA_TODO_LIST);
@@ -120,7 +121,7 @@ public class TodoService extends IntentService {
                 .prepare()
                 .executeAsBlocking();
 
-        if (todoItem.shouldBeReminded())
+        if (todoItem.isRemind())
             handleActionDeleteAlarm(todoItem.getId());
     }
 
@@ -135,7 +136,7 @@ public class TodoService extends IntentService {
         int length = todoItems.size();
         for (int i = 0; i < length; ++i) {
             TodoItem todoItem = todoItems.get(i);
-            if (todoItem.shouldBeReminded()) {
+            if (todoItem.isRemind()) {
                 handleActionDeleteAlarm(todoItem.getId());
             }
         }
@@ -153,7 +154,10 @@ public class TodoService extends IntentService {
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
-        scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        Date alarmDate = new Date(pTodoItem.getTime());
+        if (alarmDate.after(new Date())) {
+            scheduleNotification(pTodoItem, getNotification(pTodoItem));
+        }
     }
 
     private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {

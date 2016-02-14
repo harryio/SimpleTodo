@@ -1,5 +1,7 @@
 package io.theappx.simpletodo.model;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,82 +10,85 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
 import java.util.Date;
 
+import io.theappx.simpletodo.BR;
 import io.theappx.simpletodo.database.TodoContract;
 
 @StorIOSQLiteType(table = TodoContract.TABLE_NAME)
-public class TodoItem implements Parcelable {
+public class TodoItem extends BaseObservable implements Parcelable {
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_ID, key = true)
-    String mUniqueId;
+    String uniqueId;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TITLE)
-    String mTitle = "";
+    String title = "";
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DESCRIPTION)
-    String mDescription = "";
+    String description = "";
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TIME_MILLIS)
     long time;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_REMIND)
-    boolean shouldRemind;
+    boolean remind;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_COLOR)
     int color;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_DONE)
+    boolean done;
 
     public TodoItem() {
     }
 
     public TodoItem(String id) {
-        mUniqueId = id;
+        uniqueId = id;
     }
 
     public TodoItem(TodoItem other) {
-        this.mUniqueId = other.mUniqueId;
-        this.mTitle = other.mTitle;
-        this.mDescription = other.mDescription;
-        this.shouldRemind = other.shouldRemind;
+        this.uniqueId = other.uniqueId;
+        this.title = other.title;
+        this.description = other.description;
+        this.remind = other.remind;
         this.time = other.time;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String pTitle) {
-        mTitle = pTitle;
+        title = pTitle;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public void setDescription(String pDescription) {
-        mDescription = pDescription;
+        description = pDescription;
     }
 
     public long getTime() {
-        if (shouldRemind)
+        if (remind)
             return time;
         else
             throw new IllegalStateException("Set reminder before getting time value");
     }
 
     public void setTime(long time) {
-        if (shouldRemind) this.time = time;
+        if (remind) this.time = time;
     }
 
     public Date getDateInstance() {
-        if (shouldRemind)
+        if (remind)
             return new Date(time);
         else
             throw new IllegalStateException("Set reminder before getting Date instance");
     }
 
     public String getId() {
-        return mUniqueId;
+        return uniqueId;
     }
 
-    public boolean shouldBeReminded() {
-        return shouldRemind;
+    public boolean isRemind() {
+        return remind;
     }
 
-    public void setShouldRemind(boolean pShouldRemind) {
-        shouldRemind = pShouldRemind;
+    public void setReminderStatus(boolean shouldRemind) {
+        remind = shouldRemind;
     }
 
     public int getColor() {
@@ -94,30 +99,40 @@ public class TodoItem implements Parcelable {
         this.color = color;
     }
 
+    @Bindable
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+        notifyPropertyChanged(BR.done);
+    }
+
     public boolean isChanged(TodoItem pCloneTodoItem) {
-        return (!(this.mTitle.equals(pCloneTodoItem.getTitle()))
-                        || !(this.mDescription.equals(pCloneTodoItem.getDescription()))
+        return (!(this.title.equals(pCloneTodoItem.getTitle()))
+                        || !(this.description.equals(pCloneTodoItem.getDescription()))
                         || !(this.color == pCloneTodoItem.getColor())
                         || isRemindStatusChanged(pCloneTodoItem)
                         || isTimeChanged(pCloneTodoItem));
     }
 
     public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {
-        return !this.shouldRemind == pCloneTodoItem.shouldBeReminded();
+        return !this.remind == pCloneTodoItem.isRemind();
     }
 
     public boolean isTimeChanged(TodoItem cloneTodoItem) {
-        return shouldRemind && !(this.time == cloneTodoItem.getTime());
+        return remind && !(this.time == cloneTodoItem.getTime());
     }
 
     @Override
     public String toString() {
         return "TodoItem{" +
-                "mUniqueId='" + mUniqueId + '\'' +
-                ", mTitle='" + mTitle + '\'' +
-                ", mDescription='" + mDescription + '\'' +
+                "uniqueId='" + uniqueId + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
                 ", mTime='" + new Date(time).toString() + '\'' +
-                ", shouldRemind=" + shouldRemind +
+                ", remind=" + remind +
                 '}';
     }
 
@@ -128,21 +143,23 @@ public class TodoItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mUniqueId);
-        dest.writeString(this.mTitle);
-        dest.writeString(this.mDescription);
+        dest.writeString(this.uniqueId);
+        dest.writeString(this.title);
+        dest.writeString(this.description);
         dest.writeLong(this.time);
         dest.writeInt(this.color);
-        dest.writeByte(shouldRemind ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.remind ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.done ? (byte) 1 : (byte) 0);
     }
 
     protected TodoItem(Parcel in) {
-        this.mUniqueId = in.readString();
-        this.mTitle = in.readString();
-        this.mDescription = in.readString();
+        this.uniqueId = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
         this.time = in.readLong();
         this.color = in.readInt();
-        this.shouldRemind = in.readByte() != 0;
+        this.remind = in.readByte() != 0;
+        this.done = in.readByte() != 0;
     }
 
     public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
