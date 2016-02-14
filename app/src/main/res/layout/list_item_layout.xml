@@ -48,6 +48,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="4dp"
             android:orientation="vertical"
+            android:gravity="center"
             android:padding="4dp"
             android:visibility="@{todoItem.remind ? View.VISIBLE : View.INVISIBLE}"
             >
@@ -102,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif"
                 android:singleLine="true"
                 android:text="@{todoItem.title}"
                 android:textColor="?android:textColorPrimary"

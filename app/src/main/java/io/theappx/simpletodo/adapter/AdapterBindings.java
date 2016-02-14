@@ -2,11 +2,13 @@ package io.theappx.simpletodo.adapter;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.widget.TextView;
 
 import java.util.Date;
 
+import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.FormatUtils;
 
@@ -33,5 +35,10 @@ public class AdapterBindings {
     public static void strikeThroughText(TextView textView, boolean done) {
         textView.setPaintFlags(done ? (textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) :
                 (textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG)));
+
+        int textColorPrimary = ContextCompat.getColor(textView.getContext(),
+                R.color.textColorPrimary);
+        int textColorDone = ContextCompat.getColor(textView.getContext(), R.color.grey_600);
+        textView.setTextColor(done ? textColorDone : textColorPrimary);
     }
 }
