@@ -1,6 +1,7 @@
 package io.theappx.simpletodo.customview;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 import io.theappx.simpletodo.R;
 
 public class DataLayout extends RelativeLayout {
-    TextView defaultValueTextView;
+    private TextView defaultValueTextView;
 
     public DataLayout(Context context) {
         super(context, null);
@@ -59,6 +60,16 @@ public class DataLayout extends RelativeLayout {
         titleTextView.setText(dataTitle);
         defaultValueTextView.setText(dataDefaultValue);
         imageView.setImageDrawable(drawable);
+
+        Activity activity = (Activity) context;
+        int[] attrs1 = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray1 = activity.obtainStyledAttributes(attrs1);
+        int backgroundResource = typedArray1.getResourceId(0, 0);
+        typedArray1.recycle();
+        setBackgroundResource(backgroundResource);
+
+        int padding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        setPadding(padding, 0, padding, 0);
     }
 
     public void setDataValue(String defaultValue) {

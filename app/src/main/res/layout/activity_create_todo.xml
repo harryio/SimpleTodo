@@ -68,11 +68,9 @@
             android:id="@+id/remindView"
             android:layout_width="match_parent"
             android:layout_height="?listPreferredItemHeight"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:dataDefaultValue="OFF"
-            app:dataIcon="@drawable/ic_notification"
+            app:dataIcon="@drawable/ic_alarm_add"
             app:dataTitle="Reminder"/>
 
         <View
@@ -90,10 +88,7 @@
                 android:id="@+id/dateView"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeight"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
-                app:dataDefaultValue="January 24, 2015"
                 app:dataIcon="@drawable/ic_date"
                 app:dataTitle="Date"/>
 
@@ -106,10 +101,7 @@
                 android:id="@+id/timeView"
                 android:layout_width="match_parent"
                 android:layout_height="?listPreferredItemHeight"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
-                app:dataDefaultValue="10:10 pm"
                 app:dataIcon="@drawable/ic_time"
                 app:dataTitle="Time"/>
 
