@@ -24,6 +24,8 @@ public class TodoItem implements Parcelable {
     boolean remind;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_COLOR)
     int color;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_DONE)
+    boolean done;
 
     public TodoItem() {
     }
@@ -94,6 +96,14 @@ public class TodoItem implements Parcelable {
         this.color = color;
     }
 
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
     public boolean isChanged(TodoItem pCloneTodoItem) {
         return (!(this.title.equals(pCloneTodoItem.getTitle()))
                         || !(this.description.equals(pCloneTodoItem.getDescription()))
@@ -134,6 +144,7 @@ public class TodoItem implements Parcelable {
         dest.writeLong(this.time);
         dest.writeInt(this.color);
         dest.writeByte(remind ? (byte) 1 : (byte) 0);
+        dest.writeByte(done ? (byte) 1 : (byte) 0);
     }
 
     protected TodoItem(Parcel in) {
@@ -143,6 +154,7 @@ public class TodoItem implements Parcelable {
         this.time = in.readLong();
         this.color = in.readInt();
         this.remind = in.readByte() != 0;
+        this.done = in.readByte() != 0;
     }
 
     public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {

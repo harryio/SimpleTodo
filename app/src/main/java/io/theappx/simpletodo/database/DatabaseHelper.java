@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TodoContract.COLUMN_TIME_MILLIS + " INTEGER," +
                         TodoContract.COLUMN_REMIND + " INTEGER DEFAULT 0," +
                         TodoContract.COLUMN_COLOR + " INTEGER," +
+                        TodoContract.COLUMN_DONE + " INTEGER DEFAULT 0," +
                         "UNIQUE (" + TodoContract.COLUMN_ID + ") ON CONFLICT IGNORE);";
 
         db.execSQL(SQL_CREATE_TODO_TABLE);
