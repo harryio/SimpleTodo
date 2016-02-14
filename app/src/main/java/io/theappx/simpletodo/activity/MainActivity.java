@@ -22,6 +22,7 @@ import com.pushtorefresh.storio.sqlite.queries.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ import io.theappx.simpletodo.utils.StorIOProvider;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 
 public class MainActivity extends AppCompatActivity
         implements TodoAdapter.OnItemClickListener, TodoAdapter.OnItemDismissListener {
@@ -56,6 +58,9 @@ public class MainActivity extends AppCompatActivity
     private Subscription mSubscription;
     private int selectedTodoPosition;
 
+    private PublishSubject<TodoItem> doneStatusObservable;
+    private Subscription doneStatusSubscription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,30 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             loadData();
         }
+
+        setUpDoneStatusObservable();
+    }
+
+    private void setUpDoneStatusObservable() {
+        doneStatusObservable = PublishSubject.create();
+        doneStatusSubscription = doneStatusObservable
+                .debounce(1500, TimeUnit.MILLISECONDS)
+                .subscribe(new Subscriber<TodoItem>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TodoItem todoItem) {
+                        TodoService.startActionSaveTodo(MainActivity.this, todoItem);
+                    }
+                });
     }
 
     @Override
@@ -146,6 +175,12 @@ public class MainActivity extends AppCompatActivity
     public void onListItemClick(int position, TodoItem pTodoItem) {
         selectedTodoPosition = position;
         startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE_ITEM_STATUS);
+    }
+
+    @Override
+    public void onCheckChanged(boolean isChecked, TodoItem todoItem) {
+        todoItem.setDone(isChecked);
+        doneStatusObservable.onNext(todoItem);
     }
 
     @Override
@@ -273,6 +308,10 @@ public class MainActivity extends AppCompatActivity
 
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
+        }
+
+        if (doneStatusSubscription != null && !doneStatusSubscription.isUnsubscribed()) {
+            doneStatusSubscription.unsubscribe();
         }
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
             mOnItemClickListener = pOnItemClickListener;
             listItemLayoutBinding = ListItemLayoutBinding.bind(itemView);
 
+            setUpCheckBox();
         }
 
         public void setTodoItem(TodoItem pTodoItem) {
@@ -60,6 +62,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
                 throw new NullPointerException("OnItemClickListener not set");
 
             mOnItemClickListener.onListItemClick(getAdapterPosition(), mTodoItem);
+        }
+
+        private void setUpCheckBox() {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mOnItemClickListener.onCheckChanged(isChecked, mTodoItem);
+                }
+            });
         }
     }
 
@@ -116,13 +127,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
 
     public interface OnItemClickListener {
         void onListItemClick(int position, TodoItem pTodoItem);
-
+        void onCheckChanged(boolean isChecked, TodoItem todoItem);
     }
+
     public interface OnItemDismissListener {
         void onItemDismissed(int position, TodoItem todoItem);
-
     }
-
     public void setOnItemClickListener(OnItemClickListener pOnItemClickListener) {
         mOnItemClickListener = pOnItemClickListener;
     }
