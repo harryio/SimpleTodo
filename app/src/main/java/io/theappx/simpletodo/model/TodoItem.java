@@ -1,5 +1,7 @@
 package io.theappx.simpletodo.model;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,10 +10,11 @@ import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
 import java.util.Date;
 
+import io.theappx.simpletodo.BR;
 import io.theappx.simpletodo.database.TodoContract;
 
 @StorIOSQLiteType(table = TodoContract.TABLE_NAME)
-public class TodoItem implements Parcelable {
+public class TodoItem extends BaseObservable implements Parcelable {
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_ID, key = true)
     String uniqueId;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TITLE)
@@ -96,12 +99,14 @@ public class TodoItem implements Parcelable {
         this.color = color;
     }
 
+    @Bindable
     public boolean isDone() {
         return done;
     }
 
     public void setDone(boolean done) {
         this.done = done;
+        notifyPropertyChanged(BR.done);
     }
 
     public boolean isChanged(TodoItem pCloneTodoItem) {

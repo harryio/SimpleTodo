@@ -1,6 +1,7 @@
 package io.theappx.simpletodo.adapter;
 
 import android.databinding.BindingAdapter;
+import android.graphics.Paint;
 import android.text.format.DateFormat;
 import android.widget.TextView;
 
@@ -26,5 +27,11 @@ public class AdapterBindings {
             textView.setText(timeString);
 
         }
+    }
+
+    @BindingAdapter("app:doneStatus")
+    public static void strikeThroughText(TextView textView, boolean done) {
+        textView.setPaintFlags(done ? (textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) :
+                (textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG)));
     }
 }

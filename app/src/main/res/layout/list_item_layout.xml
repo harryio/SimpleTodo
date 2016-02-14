@@ -109,6 +109,7 @@
                 android:textSize="16sp"
                 android:textStyle="normal"
                 tools:text="Buy 2Kg milk"
+                app:doneStatus="@{todoItem.done}"
                 />
 
             <TextView
