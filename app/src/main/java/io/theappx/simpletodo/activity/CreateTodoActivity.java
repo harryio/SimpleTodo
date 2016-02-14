@@ -300,7 +300,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
     }
 
     private void setUpToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationIcon(R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
