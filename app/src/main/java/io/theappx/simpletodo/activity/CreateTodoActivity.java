@@ -464,4 +464,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
     private void showSoftKeyboard() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        overridePendingTransition(R.anim.activity_open_scale, R.anim.activity_close_translate);
+    }
 }

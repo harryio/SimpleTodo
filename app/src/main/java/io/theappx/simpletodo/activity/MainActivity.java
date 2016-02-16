@@ -180,12 +180,14 @@ public class MainActivity extends AppCompatActivity
     @OnClick(R.id.fab)
     public void onFabClick() {
         startActivityForResult(CreateTodoActivity.getCallingIntent(this), REQUEST_CODE_SAVE);
+        overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
     }
 
     @Override
     public void onListItemClick(int position, TodoItem pTodoItem) {
         selectedTodoPosition = position;
         startActivityForResult(CreateTodoActivity.getCallingIntent(this, pTodoItem), REQUEST_CODE_ITEM_STATUS);
+        overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
     }
 
     @Override
