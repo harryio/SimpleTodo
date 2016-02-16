@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +77,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 
         if (savedInstanceState != null) {
             mColors = savedInstanceState.getIntArray(KEY_COLORS);
-            mSelectedColor = (Integer) savedInstanceState.getSerializable(KEY_SELECTED_COLOR);
+            mSelectedColor = savedInstanceState.getInt(KEY_SELECTED_COLOR);
             mColorContentDescriptions = savedInstanceState.getStringArray(
                     KEY_COLOR_CONTENT_DESCRIPTIONS);
         }
@@ -95,9 +96,22 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
             showPaletteView();
         }
 
-        mAlertDialog = new AlertDialog.Builder(activity)
+        mAlertDialog = new AlertDialog.Builder(activity, R.style.ColorPickerDialog)
                 .setTitle(mTitleResId)
                 .setView(view)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mListener != null) {
+                            mListener.onColorSelected(mSelectedColor);
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
                 .create();
 
         return mAlertDialog;
@@ -105,10 +119,6 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 
     @Override
     public void onColorSelected(int color) {
-        if (mListener != null) {
-            mListener.onColorSelected(color);
-        }
-
         if (getTargetFragment() instanceof ColorPickerSwatch.OnColorSelectedListener) {
             final ColorPickerSwatch.OnColorSelectedListener listener =
                     (ColorPickerSwatch.OnColorSelectedListener) getTargetFragment();
@@ -120,8 +130,6 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
             // Redraw palette to show checkmark on newly selected color before dismissing.
             mPalette.drawPalette(mColors, mSelectedColor);
         }
-
-        dismiss();
     }
 
     public void showPaletteView() {

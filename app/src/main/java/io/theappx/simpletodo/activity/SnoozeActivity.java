@@ -90,7 +90,7 @@ public class SnoozeActivity extends AppCompatActivity {
                         break;
 
                     case 2:
-                        calendar.add(Calendar.HOUR, 1);
+                        calendar.add(Calendar.MINUTE, 60);
                         break;
 
                 }

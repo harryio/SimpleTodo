@@ -176,7 +176,7 @@ public class TodoService extends IntentService {
         PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode(),
                 lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long timeInMillis = pTodoItem.getDateInstance().getTime();
+        long timeInMillis = pTodoItem.getTime();
 
         AlarmManager lAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         lAlarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);

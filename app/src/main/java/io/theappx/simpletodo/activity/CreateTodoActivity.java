@@ -108,7 +108,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
 
         int[] colorArray = getResources().getIntArray(R.array.color_array);
         colorPickerDialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
-                colorArray, colorArray[0], 3, ColorPickerDialog.SIZE_SMALL);
+                colorArray, colorArray[0], 4, ColorPickerDialog.SIZE_SMALL);
         colorPickerDialog.setOnColorSelectedListener(this);
         mCalendar = Calendar.getInstance();
 

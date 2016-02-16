@@ -4,11 +4,21 @@
         android:id="@+id/color_picker_swatch"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/checkmark_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/dialog_selected_color_bg"
+        android:layout_margin="12dp"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/color_picker_checkmark"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_done"
         android:scaleType="center"
-        android:visibility="gone" />
+        android:layout_margin="8dp"
+        android:visibility="gone"/>
 </merge>
