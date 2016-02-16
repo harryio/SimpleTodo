@@ -21,7 +21,6 @@ import com.crashlytics.android.Crashlytics;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
 
-import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.customview.EmptyStateRecyclerView;
