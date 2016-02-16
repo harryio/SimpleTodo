@@ -22,3 +22,33 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def properties = loadProperties()
+
+ext {
+    keyAlias = properties.getProperty("KEY_ALIAS")
+    keyPassword = properties.getProperty("KEY_PASSWORD")
+    storePassword = properties.getProperty("STORE_PASSWORD")
+}
+
+def loadProperties() {
+    if (project.rootProject.file('local.properties').exists()) {
+        return loadFromLocalProperties()
+    } else {
+        return loadFromEnvironment()
+    }
+}
+
+def loadFromLocalProperties() {
+    Properties localProperties = new Properties()
+    localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return localProperties
+}
+
+def loadFromEnvironment() {
+    Properties envProperties = new Properties()
+    envProperties.setProperty('KEY_ALIAS', System.getenv("KEY_ALIAS"))
+    envProperties.setProperty('KEY_PASSWORD', System.getenv("KEY_PASSWORD"))
+    envProperties.setProperty('STORE_PASSWORD', System.getenv("STORE_PASSWORD"))
+    return envProperties
+}

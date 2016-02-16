@@ -17,9 +17,20 @@ repositories {
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    def keyalias = "${keyAlias}"
+    def keypassword = "${keyPassword}"
+    def storepassword = "${storePassword}"
+
+    signingConfigs {
+        SimpleTodoConfig {
+            keyAlias keyalias
+            keyPassword keypassword
+            storeFile file("$rootDir/keystore.jks")
+            storePassword storepassword
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "io.theappx.simpletodo"
         minSdkVersion 19
@@ -32,13 +43,12 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.SimpleTodoConfig
         }
     }
-
     dataBinding {
         enabled = true
     }
