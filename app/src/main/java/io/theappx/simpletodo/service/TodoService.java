@@ -23,19 +23,13 @@ import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
 import io.theappx.simpletodo.utils.StorIOProvider;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class TodoService extends IntentService {
     private static final String ACTION_SAVE_TODO = "io.theappx.simpletodo.action.SAVETODO";
     private static final String ACTION_DELETE_TODO = "io.theappx.simpletodo.action.DELETETODO";
     private static final String ACTION_CREATE_ALARM = "io.theappx.simpletodo.action.CREATEALARM";
     private static final String ACTION_DELETE_ALARM = "io.theappx.simpletodo.action.DELETEALARM";
     private static final String ACTION_DELETE_ALL = "io.theappx.simpletodo.action.DELETEALL";
+    private static final String ACTION_COMPLETE_TODO = "io.theappx.simpletodo.action.COMPLETETODO";
 
     private static final String EXTRA_TODO = "io.theappx.simpletodo.extra.TODO";
     private static final String EXTRA_TODO_ID = "io.theappx.simpletodo.extra.TODO_ID";
@@ -81,6 +75,13 @@ public class TodoService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionCompleteTodo(Context context, TodoItem todoItem) {
+        Intent intent = new Intent(context, TodoService.class);
+        intent.setAction(ACTION_COMPLETE_TODO);
+        intent.putExtra(EXTRA_TODO, todoItem);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -100,8 +101,16 @@ public class TodoService extends IntentService {
             } else if (ACTION_DELETE_ALL.equals(action)) {
                 final List<TodoItem> todoItems = intent.getParcelableArrayListExtra(EXTRA_TODO_LIST);
                 handleActionDeleteAll(todoItems);
+            } else if (ACTION_COMPLETE_TODO.equals(action)) {
+                final TodoItem todoItem = intent.getParcelableExtra(EXTRA_TODO);
+                handleActionCompleteTodo(todoItem);
             }
         }
+    }
+
+    private void handleActionCompleteTodo(TodoItem todoItem) {
+        todoItem.setDone(true);
+        handleActionSaveTodo(todoItem);
     }
 
     private void handleActionSaveTodo(TodoItem pTodoItem) {
@@ -180,7 +189,7 @@ public class TodoService extends IntentService {
 
         Intent deleteItemIntent = new Intent(this, TodoService.class);
         deleteItemIntent.putExtra(EXTRA_TODO, pTodoItem);
-        deleteItemIntent.setAction(ACTION_DELETE_TODO);
+        deleteItemIntent.setAction(ACTION_COMPLETE_TODO);
         PendingIntent deleteItemPendingIntent = PendingIntent.getService(this, pTodoItem.getId().hashCode(),
                 deleteItemIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
