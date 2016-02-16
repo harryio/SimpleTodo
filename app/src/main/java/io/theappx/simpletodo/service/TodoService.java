@@ -179,7 +179,7 @@ public class TodoService extends IntentService {
         long timeInMillis = pTodoItem.getTime();
 
         AlarmManager lAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        lAlarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);
+        lAlarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);
     }
 
     private Notification getNotification(TodoItem pTodoItem) {
