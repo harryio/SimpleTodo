@@ -120,7 +120,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 mTodoItem = new TodoItem(UUID.randomUUID().toString());
                 mTodoItem.setColor(colorArray[0]);
                 mCalendar.set(Calendar.SECOND, 0);
-                mCalendar.set(Calendar.MINUTE, mCalendar.get(Calendar.MINUTE) + 2);
+                mCalendar.add(Calendar.MINUTE, 60);
                 isNewTodo = true;
             } else {
                 if (mTodoItem.isRemind()) mCalendar.setTime(mTodoItem.getDateInstance());

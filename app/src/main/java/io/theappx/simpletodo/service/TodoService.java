@@ -205,7 +205,7 @@ public class TodoService extends IntentService {
 
         String description = pTodoItem.getDescription();
         if (!TextUtils.isEmpty(description)) {
-            lBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(description));
+            lBuilder.setContentText(description);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
