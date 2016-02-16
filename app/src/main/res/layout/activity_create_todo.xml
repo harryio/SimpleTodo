@@ -73,11 +73,6 @@
             app:dataIcon="@drawable/ic_alarm_add"
             app:dataTitle="Reminder"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_color"/>
-
         <LinearLayout
             android:id="@+id/dateTimeView"
             android:layout_width="match_parent"
@@ -92,11 +87,6 @@
                 app:dataIcon="@drawable/ic_date"
                 app:dataTitle="Date"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_color"/>
-
             <io.theappx.simpletodo.customview.DataLayout
                 android:id="@+id/timeView"
                 android:layout_width="match_parent"
@@ -104,11 +94,6 @@
                 android:layout_marginTop="4dp"
                 app:dataIcon="@drawable/ic_time"
                 app:dataTitle="Time"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider_color"/>
 
         </LinearLayout>
 
