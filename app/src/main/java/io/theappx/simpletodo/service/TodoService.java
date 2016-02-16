@@ -195,6 +195,7 @@ public class TodoService extends IntentService {
 
         NotificationCompat.Builder lBuilder = new NotificationCompat.Builder(this);
         lBuilder.setTicker(pTodoItem.getTitle())
+                .setWhen(pTodoItem.getTime())
                 .setContentTitle(pTodoItem.getTitle())
                 .setContentIntent(contentPendingIntent)
                 .setDeleteIntent(deleteItemPendingIntent)
