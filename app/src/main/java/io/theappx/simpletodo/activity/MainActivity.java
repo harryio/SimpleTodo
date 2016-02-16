@@ -31,7 +31,6 @@ import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.customview.EmptyStateRecyclerView;
 import io.theappx.simpletodo.database.TodoContract;
-import io.theappx.simpletodo.helper.SimpleDividerItemDecoration;
 import io.theappx.simpletodo.helper.SimpleItemTouchHelperCallback;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.service.TodoService;
@@ -165,7 +164,6 @@ public class MainActivity extends AppCompatActivity
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         recyclerView.setEmptyView(emptyView);
 
         mTodoAdapter = new TodoAdapter();
