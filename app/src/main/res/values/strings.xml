@@ -20,4 +20,6 @@
     <string name="select_color">Select Color</string>
     <string name="title_activity_snooze">SnoozeActivity</string>
     <string name="snooze">Snooze</string>
+    <string name="no_todo_hint">Add new todos with the + button\nat the bottom</string>
+    <string name="no_todos">No todos</string>
 </resources>
