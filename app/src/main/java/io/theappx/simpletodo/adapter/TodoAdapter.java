@@ -1,6 +1,5 @@
 package io.theappx.simpletodo.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +24,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>
     private List<TodoItem> mTodoItems;
     private OnItemClickListener mOnItemClickListener;
     private OnItemDismissListener onItemDismissListener;
-    private Context context;
 
-    public TodoAdapter(Context context) {
+    public TodoAdapter() {
         mTodoItems = Collections.emptyList();
-        this.context = context;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

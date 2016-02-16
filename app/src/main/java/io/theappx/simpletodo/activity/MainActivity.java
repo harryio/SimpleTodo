@@ -8,12 +8,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
+import io.theappx.simpletodo.customview.EmptyStateRecyclerView;
 import io.theappx.simpletodo.database.TodoContract;
 import io.theappx.simpletodo.helper.SimpleDividerItemDecoration;
 import io.theappx.simpletodo.helper.SimpleItemTouchHelperCallback;
@@ -51,9 +52,11 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recycler_view)
-    RecyclerView recyclerView;
+    EmptyStateRecyclerView recyclerView;
     @Bind(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
+    @Bind(R.id.empty_view)
+    LinearLayout emptyView;
 
     private TodoAdapter mTodoAdapter;
     private Subscription mSubscription;
@@ -163,8 +166,9 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.setEmptyView(emptyView);
 
-        mTodoAdapter = new TodoAdapter(this);
+        mTodoAdapter = new TodoAdapter();
         mTodoAdapter.setOnItemClickListener(this);
         mTodoAdapter.setOnItemDismissListener(this);
 
@@ -244,6 +248,7 @@ public class MainActivity extends AppCompatActivity
                     break;
 
                 case REQUEST_CODE_SAVE:
+                    emptyView.setVisibility(View.GONE);
                     final TodoItem todoItem =
                             data.getParcelableExtra(CreateTodoActivity.SAVE_ITEM);
                     Handler handler1 = new Handler();
