@@ -4,7 +4,7 @@
 A simple to use todo app
 
 ##Download
-<a href="https://play.google.com/store/apps/details?id=io.theappx.simpletodo"><img src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" /></a>
+<a href="https://play.google.com/store/apps/details?id=io.theappx.simpletodo&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" /></a>
 
 ##Screenshots
 <img src="/screenshots/screenshot_1.png" height="400px" />
