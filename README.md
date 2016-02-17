@@ -15,6 +15,13 @@ A simple to use todo app
 - [RxJava](https://github.com/ReactiveX/RxJava)
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 - [MaterialDateTimePicker](https://github.com/wdullaer/MaterialDateTimePicker)
+- 
+####References
+- [Drag and Swipe with Recycler View](https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.rcnephu1w)
+- [MaterialDoc](http://www.materialdoc.com/)
+- [MinimalTodo](https://github.com/avjinder/Minimal-Todo)
+- [ColorPicker](http://www.materialdoc.com/color-picker)
+- [Material Design](https://www.google.com/design/spec/material-design/introduction.html#introduction-goals)
 
 ### License
 
