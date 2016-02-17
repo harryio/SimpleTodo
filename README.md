@@ -3,6 +3,9 @@
 <br>
 A simple to use todo app
 
+##Download
+<a href="https://play.google.com/store/apps/details?id=io.theappx.simpletodo"><img src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" /></a>
+
 ##Screenshots
 <img src="/screenshots/screenshot_1.png" height="400px" />
 <img src="/screenshots/screenshot_2.png" height="400px" />
