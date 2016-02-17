@@ -2,10 +2,14 @@ package io.theappx.simpletodo.activity;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
+import android.view.View;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -20,11 +24,16 @@ public class AboutActivity extends AppCompatActivity {
     TextView contactTextView;
     @Bind(R.id.github)
     TextView githubTextView;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        }
 
         ButterKnife.bind(this);
         MovementMethod movementMethod = LinkMovementMethod.getInstance();
@@ -38,5 +47,13 @@ public class AboutActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 }

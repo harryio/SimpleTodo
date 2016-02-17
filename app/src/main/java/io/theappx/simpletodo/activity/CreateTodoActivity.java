@@ -102,7 +102,6 @@ public class CreateTodoActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_create_todo);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-
         }
         ButterKnife.bind(this);
 
