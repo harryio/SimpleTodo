@@ -5,9 +5,9 @@ A simple to use todo app
 
 ##Screenshots
 <img src="/screenshots/screenshot_1.png" height="400px" />
-<img src="/screenshots/screenshot_2.png" heigh="400px" />
-<img src="/screenshots/screenshot_3.png" heigh="400px" />
-<img src="/screenshots/screenshot_4.png" heigh="400px" />
+<img src="/screenshots/screenshot_2.png" height="400px" />
+<img src="/screenshots/screenshot_3.png" height="400px" />
+<img src="/screenshots/screenshot_4.png" height="400px" />
 
 ###Libraries used
 - [Butterknife](https://github.com/JakeWharton/butterknife)
