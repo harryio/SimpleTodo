@@ -24,6 +24,6 @@
     <string name="no_todos">No todos</string>
     <string name="about">About</string>
     <string name="dev_name">HARRY SINGH</string>
-    <string name="contact">Contact Me: <a href="http://www.harryio.com">http://www.harryio.com</a></string>
-    <string name="github">Github: <a href="https://github.com/harryio">https://github.com/harryio</a></string>
+    <string name="contact">Contact Me:\n<a href="http://www.harryio.com">http://www.harryio.com</a></string>
+    <string name="github">Github:\n<a href="https://github.com/harryio/SimpleTodo">https://github.com/harryio/SimpleTodo</a></string>
 </resources>

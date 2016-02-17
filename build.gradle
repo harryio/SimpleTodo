@@ -29,7 +29,6 @@ ext {
     keyAlias = properties.getProperty("KEY_ALIAS")
     keyPassword = properties.getProperty("KEY_PASSWORD")
     storePassword = properties.getProperty("STORE_PASSWORD")
-    fabricApiKey = properties.getProperty("FABRIC_API_KEY")
 }
 
 def loadProperties() {
@@ -51,6 +50,5 @@ def loadFromEnvironment() {
     envProperties.setProperty('KEY_ALIAS', System.getenv("KEY_ALIAS"))
     envProperties.setProperty('KEY_PASSWORD', System.getenv("KEY_PASSWORD"))
     envProperties.setProperty('STORE_PASSWORD', System.getenv("STORE_PASSWORD"))
-    envProperties.setProperty('FABRIC_API_KEY', System.getenv("FABRIC_API_KEY"))
     return envProperties
 }
