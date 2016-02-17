@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
 
@@ -29,6 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
+import io.theappx.simpletodo.BuildConfig;
 import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.adapter.TodoAdapter;
 import io.theappx.simpletodo.customview.EmptyStateRecyclerView;
@@ -69,7 +71,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics.Builder().core(
+                new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
