@@ -101,4 +101,10 @@ public class SnoozeActivity extends AppCompatActivity {
 
         return builder.create();
     }
+
+    @Override
+    public void onBackPressed() {
+        TodoService.startActionCompleteTodo(this, todoItem);
+        super.onBackPressed();
+    }
 }
