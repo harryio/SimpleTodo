@@ -22,4 +22,8 @@
     <string name="snooze">Snooze</string>
     <string name="no_todo_hint">Add new todos with the + button\nat the bottom</string>
     <string name="no_todos">No todos</string>
+    <string name="about">About</string>
+    <string name="dev_name">HARRY SINGH</string>
+    <string name="contact">Contact Me: <a href="http://www.harryio.com">http://www.harryio.com</a></string>
+    <string name="github">Github: <a href="https://github.com/harryio">https://github.com/harryio</a></string>
 </resources>

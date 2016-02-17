@@ -284,7 +284,8 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
+            case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
                 return true;
 
             case R.id.action_delete_all:

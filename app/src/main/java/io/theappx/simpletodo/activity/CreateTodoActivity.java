@@ -28,7 +28,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -128,11 +127,12 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 isNewTodo = false;
                 reminderOn = mTodoItem.isRemind();
                 //noinspection SuspiciousMethodCalls
-                selectedColor = Arrays.asList(colorArray).indexOf(mTodoItem.getColor());
+                selectedColor = mTodoItem.getColor();
             }
 
             setUp();
         }
+
         setUpColorPickerDialog(colorArray, selectedColor);
     }
 
