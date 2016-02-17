@@ -49,6 +49,14 @@ public class ColorPickerPalette extends TableLayout {
         mDescriptionSelected = res.getString(R.string.color_swatch_description_selected);
     }
 
+    public void setNumberOfColumns(int numCols) {
+        mNumColumns = numCols;
+    }
+
+    public int getNumOfColumns() {
+        return mNumColumns;
+    }
+
     private TableRow createTableRow() {
         TableRow row = new TableRow(getContext());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,

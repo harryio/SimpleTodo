@@ -28,6 +28,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -107,9 +108,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         int[] colorArray = getResources().getIntArray(R.array.color_array);
-        colorPickerDialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
-                colorArray, colorArray[0], 4, ColorPickerDialog.SIZE_SMALL);
-        colorPickerDialog.setOnColorSelectedListener(this);
+        int selectedColor = colorArray[0];
         mCalendar = Calendar.getInstance();
 
         if (savedInstanceState == null) {
@@ -128,10 +127,19 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 mCloneTodoItem = new TodoItem(mTodoItem);
                 isNewTodo = false;
                 reminderOn = mTodoItem.isRemind();
+                //noinspection SuspiciousMethodCalls
+                selectedColor = Arrays.asList(colorArray).indexOf(mTodoItem.getColor());
             }
 
             setUp();
         }
+        setUpColorPickerDialog(colorArray, selectedColor);
+    }
+
+    private void setUpColorPickerDialog(int colorArray[], int selectedColor) {
+        colorPickerDialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
+                colorArray, selectedColor, 4, ColorPickerDialog.SIZE_SMALL);
+        colorPickerDialog.setOnColorSelectedListener(this);
     }
 
     private void setUp() {

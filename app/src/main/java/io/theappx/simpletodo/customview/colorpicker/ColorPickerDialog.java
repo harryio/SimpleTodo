@@ -1,11 +1,12 @@
 package io.theappx.simpletodo.customview.colorpicker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -87,11 +88,11 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.color_picker_dialog, null);
+        @SuppressLint("InflateParams")
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.color_picker_dialog, null);
         mProgress = (ProgressBar) view.findViewById(android.R.id.progress);
         mPalette = (ColorPickerPalette) view.findViewById(R.id.color_picker);
         mPalette.init(mSize, mColumns, this);
-
         if (mColors != null) {
             showPaletteView();
         }
@@ -140,13 +141,6 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
         }
     }
 
-    public void showProgressBarView() {
-        if (mProgress != null && mPalette != null) {
-            mProgress.setVisibility(View.VISIBLE);
-            mPalette.setVisibility(View.GONE);
-        }
-    }
-
     public void setColors(int[] colors, int selectedColor) {
         if (mColors != colors || mSelectedColor != selectedColor) {
             mColors = colors;
@@ -155,39 +149,10 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
         }
     }
 
-    public void setColors(int[] colors) {
-        if (mColors != colors) {
-            mColors = colors;
-            refreshPalette();
-        }
-    }
-
-    public void setSelectedColor(int color) {
-        if (mSelectedColor != color) {
-            mSelectedColor = color;
-            refreshPalette();
-        }
-    }
-
-    public void setColorContentDescriptions(String[] colorContentDescriptions) {
-        if (mColorContentDescriptions != colorContentDescriptions) {
-            mColorContentDescriptions = colorContentDescriptions;
-            refreshPalette();
-        }
-    }
-
     private void refreshPalette() {
         if (mPalette != null && mColors != null) {
             mPalette.drawPalette(mColors, mSelectedColor, mColorContentDescriptions);
         }
-    }
-
-    public int[] getColors() {
-        return mColors;
-    }
-
-    public int getSelectedColor() {
-        return mSelectedColor;
     }
 
     @Override
