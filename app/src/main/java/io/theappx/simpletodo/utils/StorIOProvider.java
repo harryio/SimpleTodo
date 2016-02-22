@@ -12,6 +12,9 @@ import io.theappx.simpletodo.model.TodoItemStorIOSQLiteDeleteResolver;
 import io.theappx.simpletodo.model.TodoItemStorIOSQLiteGetResolver;
 import io.theappx.simpletodo.model.TodoItemStorIOSQLitePutResolver;
 
+/**
+ * Singleton providing instance of storIOSQLite
+ */
 public class StorIOProvider {
     private static StorIOSQLite mStorIOSQLite;
 

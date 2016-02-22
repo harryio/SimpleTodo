@@ -12,6 +12,9 @@ import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.utils.FormatUtils;
 
+/**
+ * Class containing custom data bindings
+ */
 public class AdapterBindings {
     @BindingAdapter("app:itemDate")
     public static void setDate(TextView textView, TodoItem todoItem) {

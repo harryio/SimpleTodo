@@ -164,6 +164,7 @@ public class TodoService extends IntentService {
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
         Date alarmDate = new Date(pTodoItem.getTime());
+        //Only create alarm if item time is after current time
         if (alarmDate.after(new Date())) {
             scheduleNotification(pTodoItem, getNotification(pTodoItem));
         }

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Crashlytics setup
         Fabric.with(this, new Crashlytics.Builder().core(
                 new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
         setContentView(R.layout.activity_main);
@@ -80,6 +81,8 @@ public class MainActivity extends AppCompatActivity
 
         setUpRecyclerView();
         if (savedInstanceState == null) {
+            //Load data from the database only if the activity is not started
+            // because of configuration change
             loadData();
         }
 
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpDoneStatusObservable() {
         doneStatusObservable = PublishSubject.create();
+        //Ignore setting done status of the item if user click
+        // checkbox multiple time within 1.5 seconds
         doneStatusSubscription = doneStatusObservable
                 .debounce(1500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
@@ -106,16 +111,20 @@ public class MainActivity extends AppCompatActivity
                     public void onNext(TodoItem todoItem) {
                         if (todoItem.isRemind()) {
                             if (todoItem.isDone()) {
+                                //Delete alarm for item if user set item's status to done manually
                                 TodoService.startActionDeleteAlarm(MainActivity.this, todoItem.getId());
                             } else {
+                                //Again create alarm if the user unset item's status to done manually
                                 TodoService.startActionCreateAlarm(MainActivity.this, todoItem);
                             }
                         }
+                        //Save the updated item in the database in background thread
                         TodoService.startActionSaveTodo(MainActivity.this, todoItem);
                     }
                 });
     }
 
+    //Save activity state
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -125,6 +134,7 @@ public class MainActivity extends AppCompatActivity
         outState.putInt(STATE_SELECTED_POSITION, selectedTodoPosition);
     }
 
+    //Restore activity state
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -134,6 +144,10 @@ public class MainActivity extends AppCompatActivity
         mTodoAdapter.setTodoItems(todoItems, false);
     }
 
+    /**
+     * Load data from the database in separate thread. Activity will be notified when
+     * results are available
+     */
     private void loadData() {
         StorIOSQLite lStorIOSQLite = StorIOProvider.getInstance(getApplicationContext());
         mSubscription = lStorIOSQLite
@@ -156,20 +170,24 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onError(Throwable e) {
-                        //TODO Implement error view here
                     }
 
                     @Override
                     public void onNext(List<TodoItem> t) {
+                        //Set fetched items from the database to the list adapter
                         mTodoAdapter.setTodoItems(t, true);
                     }
                 });
 
     }
 
+    /**
+     * Sets up RecyclerView in activity
+     */
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //Sets empty view to be shown when there are no items in the database
         recyclerView.setEmptyView(emptyView);
 
         mTodoAdapter = new TodoAdapter();
@@ -183,12 +201,20 @@ public class MainActivity extends AppCompatActivity
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    /**
+     * Start CreateTodoActivity for creating new item
+     */
     @OnClick(R.id.fab)
     public void onFabClick() {
         startActivityForResult(CreateTodoActivity.getCallingIntent(this), REQUEST_CODE_SAVE);
         overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
     }
 
+    /**
+     * Start CreateTodoActivity for showing current item
+     * @param position position of item in the list adapter
+     * @param pTodoItem item to shown
+     */
     @Override
     public void onListItemClick(int position, TodoItem pTodoItem) {
         selectedTodoPosition = position;
@@ -196,30 +222,45 @@ public class MainActivity extends AppCompatActivity
         overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);
     }
 
+    /**
+     * List item checkbox check change listener
+     * @param isChecked isChecked status
+     * @param todoItem item for which this checkbox is associated
+     */
     @Override
     public void onCheckChanged(boolean isChecked, TodoItem todoItem) {
+        //Refactor this flag in item
         todoItem.setDone(isChecked);
         doneStatusObservable.onNext(todoItem);
     }
 
+    /**
+     * Callback when item is swiped/deleted from the RecyclerView
+     * @param position position at which the item is swiped/deleted
+     * @param todoItem item which is swiped/deleted
+     */
     @Override
     public void onItemDismissed(final int position, final TodoItem todoItem) {
+        //Show a snackbar allowing user to undo this action
         Snackbar snackbar = Snackbar.make(coordinatorLayout, "Item Moved to trash", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //Add back item to the list on undo click
                         mTodoAdapter.addTodoItem(position, todoItem);
                     }
                 })
                 .setCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
+                        //Remove item from the database in the background thread
                         if (!(event == DISMISS_EVENT_ACTION)) {
                             TodoService.startActionDeleteTodo(MainActivity.this, todoItem);
                         }
                     }
                 });
 
+        //Set UI for snackbar
         snackbar.setActionTextColor(Color.RED);
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -240,6 +281,7 @@ public class MainActivity extends AppCompatActivity
                             .getBooleanExtra(CreateTodoActivity.IS_ITEM_UPDATED, true);
 
                     if (isItemDeleted) {
+                        //Delete item from adapter with delay
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -248,6 +290,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }, 500);
                     } else if (isItemUpdated) {
+                        //Update item in adapter
                         TodoItem todoItem = data.getParcelableExtra(CreateTodoActivity.UPDATE_ITEM);
                         mTodoAdapter.replaceTodoItem(selectedTodoPosition, todoItem);
                     }
@@ -258,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                     final TodoItem todoItem =
                             data.getParcelableExtra(CreateTodoActivity.SAVE_ITEM);
                     Handler handler1 = new Handler();
+                    //Add item to adapter with delay
                     handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -326,6 +370,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        //Unsubscribe from the observable to avoid memory leaks
 
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();

@@ -42,34 +42,45 @@ public class SnoozeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_snooze);
         ButterKnife.bind(this);
 
+        //Set default snooze duration to 10 minutes
         dataLayout.setDataValue("10 minutes");
 
         todoItem = getIntent().getParcelableExtra(ARG_TODO_ITEM);
         titleTextView.setText(todoItem.getTitle());
         calendar = Calendar.getInstance();
+        //Set calendar time to item's time
         calendar.setTimeInMillis(todoItem.getTime());
+        //Set calendar time ahead by default snooze time
         calendar.add(Calendar.MINUTE, 10);
     }
 
     @OnClick(R.id.delete_button)
     public void onDeleteButtonPressed() {
+        //Delete item and finish the actvity
         TodoService.startActionDeleteTodo(this, todoItem);
         finish();
     }
 
     @OnClick(R.id.data_layout)
     public void onDataLayoutClicked() {
+        //Show snooze time picker dialog
         getDialog().show();
     }
 
     @OnClick(R.id.fab)
     public void onFabClicked() {
+        //Add snooze duration to current item's item, create updated alarm
+        // and save the item to database
         todoItem.setTime(calendar.getTimeInMillis());
         TodoService.startActionCreateAlarm(this, todoItem);
         TodoService.startActionSaveTodo(this, todoItem);
         finish();
     }
 
+    /**
+     * Crete dialog to choose snooze duration
+     * @return dialog providing snooze durations to choose from
+     */
     private Dialog getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final String[] items = {"10 minutes", "30 minutes", "1 hour"};
@@ -104,6 +115,9 @@ public class SnoozeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        //Don't create alarm
+        //Don't delete item
+        //Set item done status to true and save the item in database
         TodoService.startActionCompleteTodo(this, todoItem);
         super.onBackPressed();
     }

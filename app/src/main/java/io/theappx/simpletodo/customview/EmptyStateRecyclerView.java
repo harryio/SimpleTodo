@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * Custom RecyclerView with support for empty view
+ */
 public class EmptyStateRecyclerView extends RecyclerView {
     private View emptyView;
 

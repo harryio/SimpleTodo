@@ -31,16 +31,19 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        //Set status bar color manually due to a bug in android
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
 
         ButterKnife.bind(this);
+        //Highlight hyperlinks in TextViews
         MovementMethod movementMethod = LinkMovementMethod.getInstance();
         contactTextView.setMovementMethod(movementMethod);
         githubTextView.setMovementMethod(movementMethod);
 
         try {
+            //Fetch version name
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = "Version " + packageInfo.versionName;
             versionTextView.setText(version);
