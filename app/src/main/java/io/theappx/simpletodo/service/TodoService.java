@@ -1,15 +1,8 @@
 package io.theappx.simpletodo.service;
 
-import android.app.AlarmManager;
 import android.app.IntentService;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
@@ -17,10 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.theappx.simpletodo.R;
-import io.theappx.simpletodo.activity.SnoozeActivity;
+import io.theappx.simpletodo.helper.AlarmHelper;
 import io.theappx.simpletodo.model.TodoItem;
-import io.theappx.simpletodo.receiver.NotificationPublisher;
 import io.theappx.simpletodo.utils.StorIOProvider;
 
 public class TodoService extends IntentService {
@@ -76,10 +67,14 @@ public class TodoService extends IntentService {
     }
 
     public static void startActionCompleteTodo(Context context, TodoItem todoItem) {
+        context.startService(getCompleteTodoIntent(context, todoItem));
+    }
+
+    public static Intent getCompleteTodoIntent(Context context, TodoItem todoItem) {
         Intent intent = new Intent(context, TodoService.class);
         intent.setAction(ACTION_COMPLETE_TODO);
         intent.putExtra(EXTRA_TODO, todoItem);
-        context.startService(intent);
+        return intent;
     }
 
     @Override
@@ -152,68 +147,16 @@ public class TodoService extends IntentService {
     }
 
     private void handleActionDeleteAlarm(String todoItemId) {
-        Intent intent = new Intent(this, NotificationPublisher.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, todoItemId.hashCode(),
-                intent, PendingIntent.FLAG_NO_CREATE);
-
-        if (pendingIntent != null) {
-            pendingIntent.cancel();
-            ((AlarmManager) getSystemService(ALARM_SERVICE)).cancel(pendingIntent);
-        }
+        AlarmHelper alarmHelper = new AlarmHelper();
+        alarmHelper.deleteAlarm(this, todoItemId);
     }
 
     private void handleCreateAlarm(TodoItem pTodoItem) {
         Date alarmDate = new Date(pTodoItem.getTime());
         //Only create alarm if item time is after current time
         if (alarmDate.after(new Date())) {
-            scheduleNotification(pTodoItem, getNotification(pTodoItem));
+            AlarmHelper alarmHelper = new AlarmHelper();
+            alarmHelper.createAlarm(this, pTodoItem);
         }
-    }
-
-    private void scheduleNotification(TodoItem pTodoItem, Notification pNotification) {
-        Intent lIntent = new Intent(this, NotificationPublisher.class);
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, pTodoItem.getId().hashCode());
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION, pNotification);
-        PendingIntent lPendingIntent = PendingIntent.getBroadcast(this, pTodoItem.getId().hashCode(),
-                lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long timeInMillis = pTodoItem.getTime();
-
-        AlarmManager lAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        lAlarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);
-    }
-
-    private Notification getNotification(TodoItem pTodoItem) {
-        Intent contentIntent = SnoozeActivity.getCallingIntent(this, pTodoItem);
-        PendingIntent contentPendingIntent = PendingIntent.getActivity(this, pTodoItem.getId().hashCode(),
-                contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent deleteItemIntent = new Intent(this, TodoService.class);
-        deleteItemIntent.putExtra(EXTRA_TODO, pTodoItem);
-        deleteItemIntent.setAction(ACTION_COMPLETE_TODO);
-        PendingIntent deleteItemPendingIntent = PendingIntent.getService(this, pTodoItem.getId().hashCode(),
-                deleteItemIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder lBuilder = new NotificationCompat.Builder(this);
-        lBuilder.setTicker(pTodoItem.getTitle())
-                .setWhen(pTodoItem.getTime())
-                .setContentTitle(pTodoItem.getTitle())
-                .setContentIntent(contentPendingIntent)
-                .setDeleteIntent(deleteItemPendingIntent)
-                .setSmallIcon(R.drawable.ic_alarm)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setAutoCancel(true);
-
-        String description = pTodoItem.getDescription();
-        if (!TextUtils.isEmpty(description)) {
-            lBuilder.setContentText(description);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int color = ContextCompat.getColor(this, R.color.colorPrimary);
-            lBuilder.setColor(color);
-        }
-
-        return lBuilder.build();
     }
 }
