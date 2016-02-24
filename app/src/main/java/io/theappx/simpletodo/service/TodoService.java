@@ -201,7 +201,7 @@ public class TodoService extends IntentService {
                 .setContentIntent(contentPendingIntent)
                 .setDeleteIntent(deleteItemPendingIntent)
                 .setSmallIcon(R.drawable.ic_alarm)
-                .setDefaults(Notification.DEFAULT_SOUND)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true);
 
         String description = pTodoItem.getDescription();
