@@ -39,6 +39,7 @@ public class TodoItem extends BaseObservable implements Parcelable {
     int color;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DONE)
     boolean done;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_REPEAT_INTERVAL)
     String repeatInterval;
 
     public TodoItem() {
@@ -54,6 +55,9 @@ public class TodoItem extends BaseObservable implements Parcelable {
         this.description = other.description;
         this.remind = other.remind;
         this.time = other.time;
+        this.color = other.color;
+        this.done = other.done;
+        this.repeatInterval =other.repeatInterval;
     }
 
     protected TodoItem(Parcel in) {

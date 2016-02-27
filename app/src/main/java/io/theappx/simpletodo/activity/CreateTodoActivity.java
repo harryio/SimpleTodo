@@ -162,6 +162,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
 
         setUpColorPickerDialog(colorArray, selectedColor);
+        repeatView.setDataValue(mTodoItem.getRepeatInterval().toString());
     }
 
     /**
@@ -439,6 +440,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
      */
     @OnClick(R.id.timeView)
     public void selectTime() {
+        mTimePickerDialog.setStartTime(mCalendar.get(Calendar.HOUR_OF_DAY),
+                mCalendar.get(Calendar.MINUTE));
         mTimePickerDialog.show(getFragmentManager(), "Choose Time");
     }
 
