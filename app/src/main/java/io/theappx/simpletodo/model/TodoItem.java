@@ -12,6 +12,7 @@ import java.util.Date;
 
 import io.theappx.simpletodo.BR;
 import io.theappx.simpletodo.database.TodoContract;
+import io.theappx.simpletodo.helper.RepeatInterval;
 
 @StorIOSQLiteType(table = TodoContract.TABLE_NAME)
 public class TodoItem extends BaseObservable implements Parcelable {
@@ -29,6 +30,7 @@ public class TodoItem extends BaseObservable implements Parcelable {
     int color;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DONE)
     boolean done;
+    String repeatInterval;
 
     public TodoItem() {
     }
@@ -109,6 +111,14 @@ public class TodoItem extends BaseObservable implements Parcelable {
         notifyPropertyChanged(BR.done);
     }
 
+    public String getRepeatInterval() {
+        return repeatInterval;
+    }
+
+    public void setRepeatInterval(RepeatInterval repeatInterval) {
+        this.repeatInterval = repeatInterval.name();
+    }
+
     public boolean isChanged(TodoItem pCloneTodoItem) {
         return (!(this.title.equals(pCloneTodoItem.getTitle()))
                         || !(this.description.equals(pCloneTodoItem.getDescription()))
@@ -150,6 +160,7 @@ public class TodoItem extends BaseObservable implements Parcelable {
         dest.writeInt(this.color);
         dest.writeByte(this.remind ? (byte) 1 : (byte) 0);
         dest.writeByte(this.done ? (byte) 1 : (byte) 0);
+        dest.writeString(this.repeatInterval);
     }
 
     protected TodoItem(Parcel in) {
@@ -160,6 +171,7 @@ public class TodoItem extends BaseObservable implements Parcelable {
         this.color = in.readInt();
         this.remind = in.readByte() != 0;
         this.done = in.readByte() != 0;
+        this.repeatInterval = in.readString();
     }
 
     public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
