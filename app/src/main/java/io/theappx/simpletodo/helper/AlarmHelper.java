@@ -1,7 +1,6 @@
 package io.theappx.simpletodo.helper;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +8,19 @@ import android.content.Intent;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.receiver.NotificationPublisher;
 
+/**
+ * Helper class providing methods to create/delete alarm.
+ */
 public class AlarmHelper {
+    /**
+     * Create alarm
+     * @param context context
+     * @param todoItem item for which alarm is to set
+     */
     public void createAlarm(Context context, TodoItem todoItem) {
-        TodoNotificationHelper notificationHelper = new TodoNotificationHelper();
-        Notification todoNotification = notificationHelper.getTodoNotification(context, todoItem);
-
-        Intent lIntent = new Intent(context, NotificationPublisher.class);
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, todoItem.getId().hashCode());
-        lIntent.putExtra(NotificationPublisher.NOTIFICATION, todoNotification);
+        Intent intent = NotificationPublisher.getCallingIntent(context, todoItem);
         PendingIntent lPendingIntent = PendingIntent.getBroadcast(context, todoItem.getId().hashCode(),
-                lIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         long timeInMillis = todoItem.getTime();
 
@@ -26,6 +28,11 @@ public class AlarmHelper {
         lAlarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, lPendingIntent);
     }
 
+    /**
+     * Delete alarm
+     * @param context context
+     * @param todoItemId item for which alarm is to be deleted
+     */
     public void deleteAlarm(Context context, String todoItemId) {
         Intent intent = new Intent(context, NotificationPublisher.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, todoItemId.hashCode(),

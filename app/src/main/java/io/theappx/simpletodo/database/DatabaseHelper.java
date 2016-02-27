@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.theappx.simpletodo.utils.DbUtils;
 
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "TODO";
     private static final int DATABASE_VERSION = 6;
