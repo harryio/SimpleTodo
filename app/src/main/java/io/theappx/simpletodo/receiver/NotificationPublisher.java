@@ -8,6 +8,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 import java.util.Calendar;
 
+import io.theappx.simpletodo.helper.AlarmHelper;
 import io.theappx.simpletodo.helper.RepeatInterval;
 import io.theappx.simpletodo.helper.TodoNotificationHelper;
 import io.theappx.simpletodo.model.TodoItem;
@@ -39,12 +40,14 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
         int id = intent.getIntExtra(NOTIFICATION_ID, 0);
         lNotificationManagerCompat.notify(id, todoNotification);
 
-        //Check for repeating alarm status of item and set alarm accordingly
-        setRepeatingAlarm(context, todoItem);
+        if (todoItem.isRemind()) {
+            //Check for repeating alarm status of item and set alarm accordingly
+            setRepeatingAlarm(context, todoItem);
+        }
     }
 
     private void setRepeatingAlarm(Context context, TodoItem todoItem) {
-        RepeatInterval repeatInterval = RepeatInterval.valueOf(todoItem.getRepeatInterval());
+        RepeatInterval repeatInterval = todoItem.getRepeatInterval();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(todoItem.getTime());
 
@@ -56,22 +59,32 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
 
             case DAILY:
                 calendar.add(Calendar.MILLISECOND, DAY_MILLIS);
+                createAlarm(context, calendar, todoItem);
                 break;
 
             case WEEKLY:
                 calendar.add(Calendar.MILLISECOND, WEEK_MILLIS);
+                createAlarm(context, calendar, todoItem);
+                break;
+
+            case MONTHLY:
+                calendar.add(Calendar.MONTH, 1);
+                createAlarm(context, calendar, todoItem);
                 break;
 
             case YEARLY:
                 calendar.add(Calendar.YEAR, 1);
+                createAlarm(context, calendar, todoItem);
                 break;
 
             default: throw new IllegalStateException("No interval defined for "
                     + repeatInterval.name());
-
         }
+    }
 
+    private void createAlarm(Context context, Calendar calendar, TodoItem todoItem) {
         todoItem.setTime(calendar.getTimeInMillis());
         TodoService.startActionSaveTodo(context, todoItem);
+        new AlarmHelper().createAlarm(context, todoItem);
     }
 }
