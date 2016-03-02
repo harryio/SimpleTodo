@@ -1,8 +1,8 @@
 package io.theappx.simpletodo.receiver;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.queries.Query;
@@ -19,7 +19,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-public class BootReceiver extends BroadcastReceiver {
+public class BootReceiver extends WakefulBroadcastReceiver {
     public BootReceiver() {
     }
 
