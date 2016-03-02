@@ -482,7 +482,7 @@ public class CreateTodoActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
-        });
+        }).setTitle("Repeat");
 
         builder.create().show();
     }
