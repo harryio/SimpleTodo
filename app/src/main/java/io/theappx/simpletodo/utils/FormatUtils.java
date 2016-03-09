@@ -27,6 +27,8 @@ public class FormatUtils {
      * @return formatted string of date
      */
     public static String getCompatDateString(Date date) {
+        if (DateUtils.isToday(date)) return "Today";
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(COMPACT_DATE_FORMAT, Locale.getDefault());
         return simpleDateFormat.format(date);
     }
