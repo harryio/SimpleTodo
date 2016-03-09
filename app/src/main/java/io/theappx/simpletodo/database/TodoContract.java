@@ -12,4 +12,7 @@ public class TodoContract implements BaseColumns {
     public static final String COLUMN_REMIND = "remind";
     public static final String COLUMN_COLOR = "color";
     public static final String COLUMN_DONE = "done";
+
+    //Added in version 6
+    public static final String COLUMN_REPEAT_INTERVAL = "repeatInterval";
 }

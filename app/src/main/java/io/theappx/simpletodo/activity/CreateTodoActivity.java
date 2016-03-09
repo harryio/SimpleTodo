@@ -5,10 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -39,6 +41,7 @@ import io.theappx.simpletodo.R;
 import io.theappx.simpletodo.customview.DataLayout;
 import io.theappx.simpletodo.customview.colorpicker.ColorPickerDialog;
 import io.theappx.simpletodo.customview.colorpicker.ColorPickerSwatch;
+import io.theappx.simpletodo.helper.RepeatInterval;
 import io.theappx.simpletodo.model.TodoItem;
 import io.theappx.simpletodo.service.TodoService;
 import io.theappx.simpletodo.utils.DateUtils;
@@ -48,18 +51,16 @@ public class CreateTodoActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener,
         ColorPickerSwatch.OnColorSelectedListener {
+    public static final String SAVE_ITEM = "io.theappx.saveItem";
+    public static final String IS_ITEM_DELETED = "io.theappx.isItemDeleted";
+    public static final String IS_ITEM_UPDATED = "io.theappx.isItemUpdated";
+    public static final String UPDATE_ITEM = "io.theappx.updateItem";
     private static final String ARG_TODO_ITEM = "io.theappx.todoItem";
     private static final int ANIM_DURATION = 500;
     private static final String STATE_TODO_INSTANCE = "io.theappx.todoInstance";
     private static final String STATE_TODO_CLONE_INSTANCE = "io.theappx.todoCloneInstance";
     private static final String STATE_NEW_INSTANCE = "io.theappx.newInstance";
     private static final String STATE_REMIND = "io.theappx.remind";
-
-    public static final String SAVE_ITEM = "io.theappx.saveItem";
-    public static final String IS_ITEM_DELETED = "io.theappx.isItemDeleted";
-    public static final String IS_ITEM_UPDATED = "io.theappx.isItemUpdated";
-    public static final String UPDATE_ITEM = "io.theappx.updateItem";
-
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.title)
@@ -74,16 +75,14 @@ public class CreateTodoActivity extends AppCompatActivity implements
     DataLayout dateView;
     @Bind(R.id.timeView)
     DataLayout timeView;
-
+    @Bind(R.id.repeatView)
+    DataLayout repeatView;
+    int selectedItemIndex;
     private TodoItem mTodoItem, mCloneTodoItem;
-
     private boolean isNewTodo, reminderOn;
-
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
-
     private ColorPickerDialog colorPickerDialog;
-
     private Calendar mCalendar;
 
     /**
@@ -135,6 +134,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
                 //Set default values for new item
                 mTodoItem = new TodoItem(UUID.randomUUID().toString());
                 mTodoItem.setColor(colorArray[0]);
+                mTodoItem.setRepeatInterval(RepeatInterval.ONE_TIME);
+
                 //Set calendar default time ahead of 1 hour from current time
                 mCalendar.set(Calendar.SECOND, 0);
                 mCalendar.add(Calendar.MINUTE, 60);
@@ -161,11 +162,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
         }
 
         setUpColorPickerDialog(colorArray, selectedColor);
+        repeatView.setDataValue(mTodoItem.getRepeatInterval().toString());
     }
 
     /**
      * Sets up ColorPickerDialog which is used for selecting item's color
-     *
      * @param colorArray    The array of colors to be shown in dialog
      * @param selectedColor Current selected color of the item
      */
@@ -309,10 +310,11 @@ public class CreateTodoActivity extends AppCompatActivity implements
                     //If reminder is set, then set item's remind time to calendar's time
                     mTodoItem.setTime(mCalendar.getTimeInMillis());
 
-                    //Show the item's current date and time in the UI
+                    //Show item's current date and time in the UI
                     setUpDateAndTimeEditText();
                     //Animate in remind view
                     animateInRemindView();
+                    repeatView.setDataValue(mTodoItem.getRepeatInterval().toString());
                 } else {
                     //Animate out remind view
                     animateOutRemindView();
@@ -438,6 +440,8 @@ public class CreateTodoActivity extends AppCompatActivity implements
      */
     @OnClick(R.id.timeView)
     public void selectTime() {
+        mTimePickerDialog.setStartTime(mCalendar.get(Calendar.HOUR_OF_DAY),
+                mCalendar.get(Calendar.MINUTE));
         mTimePickerDialog.show(getFragmentManager(), "Choose Time");
     }
 
@@ -450,6 +454,37 @@ public class CreateTodoActivity extends AppCompatActivity implements
         onActivityExit();
         hideSoftKeyboard();
         finish();
+    }
+
+    @OnClick(R.id.repeatView)
+    public void onRepeatViewClicked() {
+        final RepeatInterval[] values = RepeatInterval.values();
+        int length = values.length;
+        String items[] = new String[length];
+
+        for (int i = 0; i < length; ++i) {
+            items[i] = values[i].toString();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.RepeatIntervalDialog);
+        int checkedItemIndex = mTodoItem.getRepeatInterval().ordinal();
+        builder.setSingleChoiceItems(items, checkedItemIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedItemIndex = which;
+            }
+        }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                repeatView.setDataValue(values[selectedItemIndex].toString());
+                mTodoItem.setRepeatInterval(values[selectedItemIndex]);
+            }
+        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).setTitle("Repeat");
+
+        builder.create().show();
     }
 
     /**

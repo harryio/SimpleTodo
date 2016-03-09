@@ -85,29 +85,44 @@
             app:dataIcon="@drawable/ic_alarm_add"
             app:dataTitle="Reminder"/>
 
-        <LinearLayout
-            android:id="@+id/dateTimeView"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:scrollbars="none">
 
-            <io.theappx.simpletodo.customview.DataLayout
-                android:id="@+id/dateView"
+            <LinearLayout
+                android:id="@+id/dateTimeView"
                 android:layout_width="match_parent"
-                android:layout_height="?listPreferredItemHeight"
-                android:layout_marginTop="4dp"
-                app:dataIcon="@drawable/ic_date"
-                app:dataTitle="Date"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <io.theappx.simpletodo.customview.DataLayout
-                android:id="@+id/timeView"
-                android:layout_width="match_parent"
-                android:layout_height="?listPreferredItemHeight"
-                android:layout_marginTop="4dp"
-                app:dataIcon="@drawable/ic_time"
-                app:dataTitle="Time"/>
+                <io.theappx.simpletodo.customview.DataLayout
+                    android:id="@+id/dateView"
+                    android:layout_width="match_parent"
+                    android:layout_height="?listPreferredItemHeight"
+                    android:layout_marginTop="4dp"
+                    app:dataIcon="@drawable/ic_date"
+                    app:dataTitle="Date"/>
 
-        </LinearLayout>
+                <io.theappx.simpletodo.customview.DataLayout
+                    android:id="@+id/timeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="?listPreferredItemHeight"
+                    android:layout_marginTop="4dp"
+                    app:dataIcon="@drawable/ic_time"
+                    app:dataTitle="Time"/>
+
+                <io.theappx.simpletodo.customview.DataLayout
+                    android:id="@+id/repeatView"
+                    android:layout_width="match_parent"
+                    android:layout_height="?listPreferredItemHeight"
+                    android:layout_marginTop="4dp"
+                    app:dataIcon="@drawable/ic_repeat"
+                    app:dataTitle="Repeat"/>
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 

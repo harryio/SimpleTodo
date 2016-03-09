@@ -28,11 +28,15 @@ public class TodoNotificationHelper {
         lBuilder.setTicker(todoItem.getTitle())
                 .setWhen(todoItem.getTime())
                 .setContentTitle(todoItem.getTitle())
-                .setContentIntent(contentPendingIntent)
-                .setDeleteIntent(deleteItemPendingIntent)
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true);
+
+        //Enable snoozing and setting item status to done only for non-repeating alarms
+        if (todoItem.getRepeatInterval() == RepeatInterval.ONE_TIME) {
+            lBuilder.setContentIntent(contentPendingIntent);
+            lBuilder.setDeleteIntent(deleteItemPendingIntent);
+        }
 
         String description = todoItem.getDescription();
         if (!TextUtils.isEmpty(description)) {

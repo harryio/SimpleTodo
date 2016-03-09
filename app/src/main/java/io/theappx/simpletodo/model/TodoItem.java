@@ -12,9 +12,19 @@ import java.util.Date;
 
 import io.theappx.simpletodo.BR;
 import io.theappx.simpletodo.database.TodoContract;
+import io.theappx.simpletodo.helper.RepeatInterval;
 
 @StorIOSQLiteType(table = TodoContract.TABLE_NAME)
 public class TodoItem extends BaseObservable implements Parcelable {
+    public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
+        public TodoItem createFromParcel(Parcel source) {
+            return new TodoItem(source);
+        }
+
+        public TodoItem[] newArray(int size) {
+            return new TodoItem[size];
+        }
+    };
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_ID, key = true)
     String uniqueId;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_TITLE)
@@ -29,6 +39,8 @@ public class TodoItem extends BaseObservable implements Parcelable {
     int color;
     @StorIOSQLiteColumn(name = TodoContract.COLUMN_DONE)
     boolean done;
+    @StorIOSQLiteColumn(name = TodoContract.COLUMN_REPEAT_INTERVAL)
+    String repeatInterval;
 
     public TodoItem() {
     }
@@ -43,6 +55,20 @@ public class TodoItem extends BaseObservable implements Parcelable {
         this.description = other.description;
         this.remind = other.remind;
         this.time = other.time;
+        this.color = other.color;
+        this.done = other.done;
+        this.repeatInterval =other.repeatInterval;
+    }
+
+    protected TodoItem(Parcel in) {
+        this.uniqueId = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.time = in.readLong();
+        this.color = in.readInt();
+        this.remind = in.readByte() != 0;
+        this.done = in.readByte() != 0;
+        this.repeatInterval = in.readString();
     }
 
     public String getTitle() {
@@ -109,12 +135,22 @@ public class TodoItem extends BaseObservable implements Parcelable {
         notifyPropertyChanged(BR.done);
     }
 
+    public RepeatInterval getRepeatInterval() {
+        return repeatInterval == null ? RepeatInterval.ONE_TIME : RepeatInterval.valueOf(repeatInterval);
+    }
+
+    public void setRepeatInterval(RepeatInterval repeatInterval) {
+        this.repeatInterval = repeatInterval.name();
+    }
+
     public boolean isChanged(TodoItem pCloneTodoItem) {
         return (!(this.title.equals(pCloneTodoItem.getTitle()))
-                        || !(this.description.equals(pCloneTodoItem.getDescription()))
-                        || !(this.color == pCloneTodoItem.getColor())
-                        || isRemindStatusChanged(pCloneTodoItem)
-                        || isTimeChanged(pCloneTodoItem));
+                || !(this.description.equals(pCloneTodoItem.getDescription()))
+                || !(this.color == pCloneTodoItem.getColor())
+                || isRemindStatusChanged(pCloneTodoItem)
+                || !(color == pCloneTodoItem.getColor())
+                || (remind && !repeatInterval.equals(pCloneTodoItem.getRepeatInterval().name()))
+                || isTimeChanged(pCloneTodoItem));
     }
 
     public boolean isRemindStatusChanged(TodoItem pCloneTodoItem) {
@@ -150,25 +186,6 @@ public class TodoItem extends BaseObservable implements Parcelable {
         dest.writeInt(this.color);
         dest.writeByte(this.remind ? (byte) 1 : (byte) 0);
         dest.writeByte(this.done ? (byte) 1 : (byte) 0);
+        dest.writeString(this.repeatInterval);
     }
-
-    protected TodoItem(Parcel in) {
-        this.uniqueId = in.readString();
-        this.title = in.readString();
-        this.description = in.readString();
-        this.time = in.readLong();
-        this.color = in.readInt();
-        this.remind = in.readByte() != 0;
-        this.done = in.readByte() != 0;
-    }
-
-    public static final Creator<TodoItem> CREATOR = new Creator<TodoItem>() {
-        public TodoItem createFromParcel(Parcel source) {
-            return new TodoItem(source);
-        }
-
-        public TodoItem[] newArray(int size) {
-            return new TodoItem[size];
-        }
-    };
 }
