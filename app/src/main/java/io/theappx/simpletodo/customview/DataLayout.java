@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -44,7 +43,7 @@ public class DataLayout extends RelativeLayout {
 
         String dataTitle = "";
         String dataDefaultValue = "";
-        Drawable drawable;
+        int drawableId;
 
         TypedArray typedArray = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.Data, 0, 0);
@@ -52,14 +51,14 @@ public class DataLayout extends RelativeLayout {
             dataTitle = typedArray.getString(R.styleable.Data_dataTitle);
             dataDefaultValue = typedArray.getString(R.styleable.Data_dataDefaultValue);
 
-            drawable = typedArray.getDrawable(R.styleable.Data_dataIcon);
+            drawableId = typedArray.getResourceId(R.styleable.Data_dataIcon, 0);
         } finally {
             typedArray.recycle();
         }
 
         titleTextView.setText(dataTitle);
         defaultValueTextView.setText(dataDefaultValue);
-        imageView.setImageDrawable(drawable);
+        imageView.setImageResource(drawableId);
 
         Activity activity = (Activity) context;
         int[] attrs1 = new int[]{R.attr.selectableItemBackground};

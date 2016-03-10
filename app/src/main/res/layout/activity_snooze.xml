@@ -63,7 +63,7 @@
             android:layout_marginTop="40dp"
             android:background="@color/colorPrimary"
             android:drawablePadding="4dp"
-            android:drawableStart="@drawable/ic_delete"
+            android:drawableStart="@drawable/delete_wrapper"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="@string/delete"
@@ -76,8 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_done"
         app:layout_anchor="@id/appBar"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchorGravity="bottom|right|end"
+        app:srcCompat="@drawable/ic_done"/>
 
 </android.support.design.widget.CoordinatorLayout>

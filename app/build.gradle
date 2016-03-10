@@ -37,6 +37,12 @@ android {
         targetSdkVersion 23
         versionCode 3
         versionName "1.2"
+
+        generatedDensities = []
+
+        aaptOptions {
+            additionalParameters "--no-version-vectors"
+        }
     }
     buildTypes {
         debug {

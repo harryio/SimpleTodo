@@ -28,7 +28,7 @@ public class TodoNotificationHelper {
         lBuilder.setTicker(todoItem.getTitle())
                 .setWhen(todoItem.getTime())
                 .setContentTitle(todoItem.getTitle())
-                .setSmallIcon(R.drawable.ic_alarm)
+                .setSmallIcon(R.drawable.alarm_check_wrapper)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true);
 
