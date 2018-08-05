@@ -3,23 +3,23 @@
 <br>
 A simple to use todo app
 
-##Download
+## Download
 <a href="https://play.google.com/store/apps/details?id=io.theappx.simpletodo&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" width="200px"/></a>
 
-##Screenshots
+## Screenshots
 <img src="/screenshots/screenshot_1.png" height="400px" />
 <img src="/screenshots/screenshot_2.png" height="400px" />
 <img src="/screenshots/screenshot_3.png" height="400px" />
 <img src="/screenshots/screenshot_4.png" height="400px" />
 
-###Libraries used
+### Libraries used
 - [Butterknife](https://github.com/JakeWharton/butterknife)
 - [StorIo](https://github.com/pushtorefresh/storio)
 - [RxJava](https://github.com/ReactiveX/RxJava)
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 - [MaterialDateTimePicker](https://github.com/wdullaer/MaterialDateTimePicker)
 
-####References
+#### References
 - [Drag and Swipe with Recycler View](https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.rcnephu1w)
 - [MaterialDoc](http://www.materialdoc.com/)
 - [MinimalTodo](https://github.com/avjinder/Minimal-Todo)
